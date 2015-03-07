@@ -88,18 +88,6 @@ public class Room {
     public String toString(){
         return "pokoj: " + number + "(" + id + ") kapacita: " + capacity; 
     }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 29 * hash + (int) (this.id ^ (this.id >>> 32));
-        hash = 29 * hash + this.capacity;
-        return hash;
-    }
     
     /**
      *
@@ -113,5 +101,17 @@ public class Room {
         }
         Room r = (Room) obj;
         return (r.getId()==id && r.getCapacity()==capacity);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 29 * hash + this.capacity;
+        return hash;
     }
 }
