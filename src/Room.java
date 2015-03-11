@@ -11,9 +11,9 @@
 public class Room {
     private long id;
     private int floor;
-    private int number = (int) (floor*100 + id);
     private int capacity;
     private String note;
+    private int number = (int) (floor*100 + id);
     
     public Room(){}
 

@@ -19,7 +19,7 @@ public class RoomManagerImpl implements RoomManager{
     }
 
     @Override
-    public void deleteRoom(Room room) {
+    public void deleteRoom(long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -14,7 +14,7 @@ import java.util.Collection;
 public interface RoomManager {
     public void createRoom(Room room);
     
-    public void deleteRoom(Room room);
+    public void deleteRoom(long id);
     
     public void updateRoom(Room room);
     
