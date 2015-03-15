@@ -39,6 +39,41 @@ public class RoomManagerImplTest {
     }
     
     @Test
+    public void createRoomWithWrongArgument(){
+        try{
+           manager.createRoom(null);
+           fail();
+        } catch(IllegalArgumentException ex){
+            //ok
+        }   
+        Room room = newRoom(-1, 5, 4, "se záporným id");
+        try{
+           manager.createRoom(null);
+           fail();
+        } catch(IllegalArgumentException ex){
+            //ok
+        }
+        
+        Room room1 = newRoom(1, -5, 4, "sklep");
+        try{
+            
+            manager.createRoom(room1);
+            fail();
+        }catch(IllegalArgumentException ex){
+            //ok
+        }
+        
+        Room room2 = newRoom(2, 5, -4, "se záporným počtem postelí");
+        try{
+            
+            manager.createRoom(room2);
+            fail();
+        }catch(IllegalArgumentException ex){
+            //ok
+        }    
+    }
+    
+    @Test
     public void deleteRoom(){
         Room room1 = newRoom(1, 4, 3, "rozbitá vana");
         Room room2 = newRoom(2, 4, 3, "postýlka pro děti");
@@ -51,9 +86,7 @@ public class RoomManagerImplTest {
         
         Collection<Room> list = new ArrayList<>();
         list.add(room1);
-        list.add(room2);
         list.add(room3);
-        list.remove(room2);
         
         assertEquals(list.size(), result.size());  
     }
@@ -77,9 +110,9 @@ public class RoomManagerImplTest {
         List<Room> list = new ArrayList<>();
         list.add(room);
         Room result = list.get(0);
-
-        assertEquals(manager.getRoomById(1).getId(), result.getId());
-        assertEquals(manager.getRoomById(1).getFloor(), result.getFloor());
+        Room roomById = manager.getRoomById(1);
+        assertEquals(roomById.getId(), result.getId());
+        assertEquals(roomById.getFloor(), result.getFloor());
     }
     
     @Test

@@ -33,9 +33,9 @@ public class GuestManagerImplTest {
     
     @Test
     public void getGuestBySurname() {        
-        String Surname = "";        
+        String surname = "";        
         Guest expResult = null;
-        Guest result = manager.getGuestBySurname(Surname);
+        Guest result = manager.getGuestBySurname(surname);
         assertEquals(expResult, result);        
     }
     
