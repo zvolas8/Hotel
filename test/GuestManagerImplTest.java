@@ -42,7 +42,7 @@ public class GuestManagerImplTest {
     @Test
     public void deleteGuest() {        
         Guest guest = null;        
-        //manager.deleteGuest(guest);        
+        manager.deleteGuest(guest);        
     }         
    
     private static Guest newGuest(String name, String surname, String address, String phoneNumber) {
