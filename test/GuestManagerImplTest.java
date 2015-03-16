@@ -70,11 +70,9 @@ public class GuestManagerImplTest {
         
         Collection<Guest> result = manager.findAllGuest();
         
-        Collection<Guest> expResult = new ArrayList<>();
-        expResult.add(guest1);
+        Collection<Guest> expResult = new ArrayList<>();        
         expResult.add(guest2);
-        expResult.add(guest3);
-        expResult.remove(guest1);
+        expResult.add(guest3);        
         
         assertEquals(result, expResult);       
         
