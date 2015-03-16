@@ -14,13 +14,13 @@ import java.util.Collection;
 public interface GuestManager {
     public void createGuest(Guest guest);
     
-    public void deleteGuest(Guest guest);
+    public void deleteGuest(long id);
     
     public void updateGuest(Guest guest);
     
     public Guest getGuestById(long id);
     
-    public Guest getGuestBySurname(String Surname);
+    public Collection<Guest> getGuestsBySurname(String Surname);
     
     public Collection<Guest> findAllGuest();
 }

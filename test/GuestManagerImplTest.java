@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,32 +22,68 @@ public class GuestManagerImplTest {
     
     @Test
     public void createGuest() {
-        Guest guest = newGuest("John","Smith","123 Fake St.", "020202");
+        Guest guest = newGuest(007, "John","Smith","123 Fake St.", "020202");
         manager.createGuest(guest);
 
         Long guestId = guest.getId();
         assertNotNull(guestId);
         Guest result = manager.getGuestById(guestId);
-        assertEquals(guest, result);
-        assertNotSame(guest, result);        
+        assertEquals(guest, result);               
     }
     
     @Test
     public void getGuestBySurname() {        
         String Surname = "";        
-        Guest expResult = null;
-        Guest result = manager.getGuestBySurname(Surname);
+        Collection<Guest> expResult = null;
+        Collection<Guest> result = manager.getGuestsBySurname(Surname);
+        assertEquals(expResult, result);        
+    }
+    
+    @Test
+    public void getGuestBySurnameII() {        
+        String Surname = "Smith"; 
+        Guest guest1 = newGuest(7, "John","Smith","123 Fake St.", "020202");
+        Guest guest2 = newGuest(8, "Jane","Smith","567 5th Avenue", "158");
+        Guest guest3 = newGuest(1, "Bill","Gates","Redmond", "2000");
+        manager.createGuest(guest1);
+        manager.createGuest(guest2);
+        manager.createGuest(guest3);
+        
+        Collection<Guest> expResult = new ArrayList<>();
+        expResult.add(guest1);
+        expResult.add(guest2);
+        
+        Collection<Guest> result = manager.getGuestsBySurname(Surname);
         assertEquals(expResult, result);        
     }
     
     @Test
     public void deleteGuest() {        
-        Guest guest = null;        
-        //manager.deleteGuest(guest);        
+        Guest guest1 = newGuest(7, "John","Smith","123 Fake St.", "020202");
+        Guest guest2 = newGuest(8, "Jane","Smith","567 5th Avenue", "158");
+        Guest guest3 = newGuest(1, "Bill","Gates","Redmond", "2000");
+        manager.createGuest(guest1);
+        manager.createGuest(guest2);
+        manager.createGuest(guest3);
+        manager.deleteGuest(7);
+        
+        Collection<Guest> result = manager.findAllGuest();
+        
+        Collection<Guest> expResult = new ArrayList<>();
+        expResult.add(guest1);
+        expResult.add(guest2);
+        expResult.add(guest3);
+        expResult.remove(guest1);
+        
+        assertEquals(result, expResult);       
+        
+        
+               
     }         
    
-    private static Guest newGuest(String name, String surname, String address, String phoneNumber) {
+    private static Guest newGuest(long id, String name, String surname, String address, String phoneNumber) {
         Guest guest = new Guest();
+        guest.setId(id);
         guest.setName(name);
         guest.setSurname(surname);
         guest.setAddress(address);

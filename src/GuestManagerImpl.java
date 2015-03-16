@@ -19,7 +19,7 @@ public class GuestManagerImpl implements GuestManager{
     }
 
     @Override
-    public void deleteGuest(Guest guest) {
+    public void deleteGuest(long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -34,7 +34,7 @@ public class GuestManagerImpl implements GuestManager{
     }
 
     @Override
-    public Guest getGuestBySurname(String Surname) {
+    public Collection<Guest> getGuestsBySurname(String Surname) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
