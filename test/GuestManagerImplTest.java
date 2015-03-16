@@ -32,7 +32,7 @@ public class GuestManagerImplTest {
     }
     
     @Test
-    public void getGuestBySurname() {        
+    public void getGuestBySurname() {    
         String Surname = "";        
         Collection<Guest> expResult = null;
         Collection<Guest> result = manager.getGuestsBySurname(Surname);
@@ -53,7 +53,8 @@ public class GuestManagerImplTest {
         expResult.add(guest1);
         expResult.add(guest2);
         
-        Collection<Guest> result = manager.getGuestsBySurname(Surname);
+        Collection<Guest> result = manager.getGuestsBySurname(Surname);        
+               
         assertEquals(expResult, result);        
     }
     

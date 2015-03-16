@@ -12,11 +12,11 @@ import java.util.Collection;
  * @author marek
  */
 public interface RoomManager {
-    public void createRoom(Room room);
+    public void createRoom(Room room) throws IllegalArgumentException;
     
     public void deleteRoom(long id);
     
-    public void updateRoom(Room room);
+    public void updateRoom(Room room) throws IllegalArgumentException;
     
     public Room getRoomById(long id);
     
