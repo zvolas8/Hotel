@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 /**
  *
  * @author Ondrej Gruza
+ * 
  */
 public class GuestManagerImplTest {
     
