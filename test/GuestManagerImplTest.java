@@ -22,10 +22,10 @@ public class GuestManagerImplTest {
     
     @Test
     public void createGuest() {
-        Guest guest = newGuest(007, "John","Smith","123 Fake St.", "020202");
+        Guest guest = newGuest(7, "John","Smith","123 Fake St.", "020202");
         manager.createGuest(guest);
 
-        Long guestId = guest.getId();
+        long guestId = guest.getId();
         assertNotNull(guestId);
         Guest result = manager.getGuestById(guestId);
         assertEquals(guest, result);               
