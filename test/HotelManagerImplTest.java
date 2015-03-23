@@ -28,11 +28,11 @@ public class HotelManagerImplTest {
     @Before
     public void setUp(){
         manager = new HotelManagerImpl();
-        roomManager = new RoomManagerImpl();
+       // roomManager = new RoomManagerImpl();
         guestManager = new GuestManagerImpl();
     }
     
-    @Test
+  /*  @Test
     public void findAllEmptyRooms(){
         Guest guest = newGuest("John","Smith","123 Fake St.", "020202");
         Room room1 = newRoom(1, 4, 3, "Pokoj s bezbarierovým přístupem");
@@ -48,7 +48,7 @@ public class HotelManagerImplTest {
         freeRooms = manager.findAllEmptyRooms();
         
         assertEquals(2,freeRooms.size());
-    }
+    }*/
     
     private static Room newRoom(long id, int floor, int capacity, String note){
         Room room = new Room();

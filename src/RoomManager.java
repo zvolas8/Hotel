@@ -1,5 +1,6 @@
 
 import java.util.Collection;
+import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,9 +19,7 @@ public interface RoomManager {
     
     public void updateRoom(Room room) throws IllegalArgumentException;
     
-    public Room getRoomById(long id);
+    public Room getRoomById(Long id);
     
-    public Room getRoomByNumber(int number);
-    
-    public Collection<Room> findAllRoom();
+    public List<Room> findAllRoom();
 }

@@ -9,25 +9,24 @@
  * @author marek
  */
 public class Room {
-    private long id;
+    private Long id;
     private int floor;
     private int capacity;
     private String note;
-    private int number = (int) (floor*100 + id);
     
     public Room(){}
 
     /**
      * @return the id
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -43,13 +42,6 @@ public class Room {
      */
     public void setFloor(int floor) {
         this.floor = floor;
-    }
-
-    /**
-     * @return the number
-     */
-    public int getNumber() {
-        return number;
     }
 
     /**
@@ -86,7 +78,7 @@ public class Room {
      */
     @Override
     public String toString(){
-        return "pokoj: " + number + "(" + id + ") kapacita: " + capacity; 
+        return "pokoj: " + "(" + id + ") kapacita: " + capacity; 
     }
     
     /**

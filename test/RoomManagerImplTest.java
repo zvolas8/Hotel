@@ -4,15 +4,20 @@
  * and open the template in the editor.
  */
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import javax.sql.DataSource;
+import org.junit.Before;    
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.junit.After;
 
 /**
  *
@@ -21,21 +26,39 @@ import static org.junit.Assert.*;
 public class RoomManagerImplTest {
     
     private RoomManagerImpl manager;
+    private DataSource dataSource;
     
     @Before
-    public void setUp(){
-        manager = new RoomManagerImpl();
+    public void setUp() throws SQLException{
+        BasicDataSource bds = new BasicDataSource();
+        bds.setUrl("jdbc:derby:memory:RoomManagerTest;create=true");
+        this.dataSource = bds;
+        
+        try (Connection conn = bds.getConnection()) {
+            conn.prepareStatement("CREATE TABLE ROOM ("
+                    + "id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
+                    + "floor INT,"
+                    + "capacity INT NOT NULL,"
+                    + "note VARCHAR(255))").executeUpdate();
+        }
+        manager = new RoomManagerImpl(bds);
+    }
+    
+   @After
+    public void tearDown() throws SQLException {
+        try (Connection con = dataSource.getConnection()) {
+            con.prepareStatement("DROP TABLE ROOM").executeUpdate();
+        }
     }
     
     @Test
     public void createRoom(){
-        Room room = newRoom(1, 4, 3, "Pokoj s bezbarierovým přístupem");
+        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem");
         manager.createRoom(room);
         
-        long roomID = room.getId();
-        long roomNumber = room.getNumber();
+        Long roomID = room.getId();
+        System.out.println(roomID);
         assertNotNull(roomID);
-        assertEquals(403, roomNumber);
     }
     
     @Test
@@ -46,7 +69,7 @@ public class RoomManagerImplTest {
         } catch(IllegalArgumentException ex){
             //ok
         }   
-        Room room = newRoom(-1, 5, 4, "se záporným id");
+        Room room = newRoom(5, 4, "se záporným id");
         try{
            manager.createRoom(null);
            fail();
@@ -54,18 +77,16 @@ public class RoomManagerImplTest {
             //ok
         }
         
-        Room room1 = newRoom(1, -5, 4, "sklep");
+        Room room1 = newRoom(-5, 4, "sklep");
         try{
-            
             manager.createRoom(room1);
             fail();
         }catch(IllegalArgumentException ex){
             //ok
         }
         
-        Room room2 = newRoom(2, 5, -4, "se záporným počtem postelí");
-        try{
-            
+        Room room2 = newRoom(5, -4, "se záporným počtem postelí");
+        try{    
             manager.createRoom(room2);
             fail();
         }catch(IllegalArgumentException ex){
@@ -75,47 +96,113 @@ public class RoomManagerImplTest {
     
     @Test
     public void deleteRoom(){
-        Room room1 = newRoom(1, 4, 3, "rozbitá vana");
-        Room room2 = newRoom(2, 4, 3, "postýlka pro děti");
-        Room room3 = newRoom(3, 3, 5, "ok");
+        Long id = new Long(2);
+        Room room1 = newRoom(4, 3, "rozbitá vana");
+        Room room2 = newRoom(4, 3, "postýlka pro děti");
+        Room room3 = newRoom(3, 5, "ok");
         manager.createRoom(room1);
         manager.createRoom(room2);
         manager.createRoom(room3);
-        manager.deleteRoom(2);
+        manager.deleteRoom(id);
         Collection<Room> result = manager.findAllRoom();
         
         Collection<Room> list = new ArrayList<>();
         list.add(room1);
         list.add(room3);
         
-        assertEquals(list.size(), result.size());  
+        assertEquals(list.size(), result.size());
     }
     
     @Test
-    public void updateRoom(){
-        Room room1 = newRoom(1, 3, 2, "v Opravě");
-        Room room1new = newRoom(1, 3, 2,"opraven");
-        manager.createRoom(room1);
-        manager.updateRoom(room1new);
-        Room result = manager.getRoomById(1);
-        assertEquals(room1new.getId(), result.getId());
-        assertEquals(room1new.getFloor(), result.getFloor());
-        assertEquals(room1new.getNote(), result.getNote());
+    public void updateGrave() {
+        Room room = newRoom(3, 6,"nic");
+        Room room2 = newRoom(2, 6,"neco");
+        manager.createRoom(room);
+        manager.createRoom(room2);
+        Long roomId = room.getId();
+
+        room = manager.getRoomById(roomId);
+        room.setFloor(2);
+        manager.updateRoom(room);
+        assertEquals(2, room.getFloor());
+        assertEquals(6, room.getCapacity());
+        assertEquals("nic", room.getNote());
+
+        room = manager.getRoomById(roomId);
+        room.setNote("neco");
+        manager.updateRoom(room);
+        assertEquals(2, room.getFloor());
+        assertEquals(6, room.getCapacity());
+        assertEquals("neco", room.getNote());
+
+        assertDeepEquals(room2, manager.getRoomById(room2.getId()));
+    }
+
+    @Test
+    public void updateGraveWithWrongAttributes() {
+
+        Room room = newRoom(2, 4,"záchod");
+        manager.createRoom(room);
+        Long roomId = room.getId();
+
+        try {
+            manager.updateRoom(null);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }
+
+        try {
+            room = manager.getRoomById(roomId);
+            room.setId(null);
+            manager.updateRoom(room);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }
+
+        try {
+            room = manager.getRoomById(roomId);
+            room.setId(roomId - 1);
+            manager.updateRoom(room);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }
+
+        try {
+            room = manager.getRoomById(roomId);
+            room.setFloor(-1);
+            manager.updateRoom(room);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }
+
+        try {
+            room = manager.getRoomById(roomId);
+            room.setCapacity(0);
+            manager.updateRoom(room);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }
     }
     
     @Test
     public void getRoomById(){
-        Room room = newRoom(1, 2, 4, "ok");
+        Long id = new Long(1);
+        Room room = newRoom(2, 4, "ok");
         manager.createRoom(room);
         List<Room> list = new ArrayList<>();
         list.add(room);
         Room result = list.get(0);
-        Room roomById = manager.getRoomById(1);
+        Room roomById = manager.getRoomById(id);
         assertEquals(roomById.getId(), result.getId());
         assertEquals(roomById.getFloor(), result.getFloor());
     }
     
-    @Test
+    /*@Test
     public void getRoombyNumber(){
         Room room = newRoom(1, 2, 4, "ok");
         manager.createRoom(room);
@@ -125,14 +212,14 @@ public class RoomManagerImplTest {
 
         assertEquals(manager.getRoomByNumber(201).getId(), result.getId());
         assertEquals(manager.getRoomByNumber(201).getCapacity(), result.getCapacity());
-    }
+    }*/
     
     @Test
     public void findAllRoom(){
-        Room room1 = newRoom(1, 4, 3, "rozbitá vana");
-        Room room2 = newRoom(2, 4, 3, "postýlka pro děti");
-        Room room3 = newRoom(3, 3, 5, "ok");
-        Room room4 = newRoom(1, 2, 4, "ok");
+        Room room1 = newRoom(4, 3, "rozbitá vana");
+        Room room2 = newRoom(4, 3, "postýlka pro děti");
+        Room room3 = newRoom(3, 5, "ok");
+        Room room4 = newRoom(2, 4, "ok");
         manager.createRoom(room1);
         manager.createRoom(room2);
         manager.createRoom(room3);
@@ -145,16 +232,26 @@ public class RoomManagerImplTest {
         assertEquals(list.size(), manager.findAllRoom().size());
     }
     
-    private static Room newRoom(long id, int floor, int capacity, String note){
+    private static Room newRoom(int floor, int capacity, String note){
         Room room = new Room();
-        room.setId(id);
         room.setFloor(floor);
         room.setCapacity(capacity);
         room.setNote(note);
         return room;
     }
     
-    
-    
-    
+    private void assertDeepEquals(List<Room> expectedList, List<Room> actualList) {
+        for (int i = 0; i < expectedList.size(); i++) {
+            Room expected = expectedList.get(i);
+            Room actual = actualList.get(i);
+            assertDeepEquals(expected, actual);
+        }
+    }
+
+    private void assertDeepEquals(Room expected, Room actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getFloor(), actual.getFloor());
+        assertEquals(expected.getCapacity(), actual.getCapacity());
+        assertEquals(expected.getNote(), actual.getNote());
+    }
 }
