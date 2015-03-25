@@ -1,5 +1,6 @@
 
 import java.util.Collection;
+import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,13 +15,13 @@ import java.util.Collection;
 public interface GuestManager {
     public void createGuest(Guest guest);
     
-    public void deleteGuest(long id);
+    public void deleteGuest(Long id);
     
     public void updateGuest(Guest guest);
     
-    public Guest getGuestById(long id);
+    public Guest getGuestById(Long id);
     
-    public Collection<Guest> getGuestsBySurname(String Surname);
+    public List<Guest> getGuestsBySurname(String Surname);
     
-    public Collection<Guest> findAllGuest();
+    public List<Guest> findAllGuest();
 }

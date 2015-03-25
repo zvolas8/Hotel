@@ -1,5 +1,4 @@
 
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.*;
@@ -69,7 +68,7 @@ public class RoomManagerImpl implements RoomManager{
                 
                 int count = st.executeUpdate();
                 if (count != 1) {
-                    throw new ServiceFailureException("Internal Error: More rows inserted when trying to insert grave " + room);
+                    throw new ServiceFailureException("Internal Error: More rows inserted when trying to insert room " + room);
                 }
                 ResultSet keyRS = st.getGeneratedKeys();
                 room.setId(getKey(keyRS, room));
@@ -102,18 +101,18 @@ public class RoomManagerImpl implements RoomManager{
     }
     
     @Override
-    public void deleteRoom(long id) {
+    public void deleteRoom(Long id) {
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
             try(PreparedStatement st = conn.prepareStatement("DELETE FROM room WHERE id=?")) {
                 st.setLong(1,id);
                 if(st.executeUpdate()!=1) {
-                    throw new ServiceFailureException("did not delete grave with id ="+id);
+                    throw new ServiceFailureException("did not delete room with id ="+id);
                 }
             }
         } catch (SQLException ex) {
-           logger.log(Level.SEVERE, "Error when deleting estate.", ex);
-           throw new ServiceFailureException("Error when retrieving all graves", ex);
+           logger.log(Level.SEVERE, "Error when deleting room.", ex);
+           throw new ServiceFailureException("Error when retrieving all rooms", ex);
         }
     }
 
@@ -150,11 +149,11 @@ public class RoomManagerImpl implements RoomManager{
                 st.setLong(1, id);
                 ResultSet rs = st.executeQuery();
                 if (rs.next()) {
-                    Room room = resultSetToGrave(rs);
+                    Room room = resultSetToRoom(rs);
                     if (rs.next()) {
                         throw new ServiceFailureException(
                                 "Internal error: More entities with the same id found "
-                                        + "(source id: " + id + ", found " + room + " and " + resultSetToGrave(rs));
+                                        + "(source id: " + id + ", found " + room + " and " + resultSetToRoom(rs));
                     }
                     return room;
                 } else {
@@ -167,7 +166,7 @@ public class RoomManagerImpl implements RoomManager{
         }
     }
     
-    private Room resultSetToGrave(ResultSet rs) throws SQLException {
+    private Room resultSetToRoom(ResultSet rs) throws SQLException {
         Room room = new Room();
         room.setId(rs.getLong("id"));
         room.setFloor(rs.getInt("floor"));
@@ -178,12 +177,13 @@ public class RoomManagerImpl implements RoomManager{
 
     @Override
     public List<Room> findAllRoom() {
+        checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
             try (PreparedStatement st = conn.prepareStatement("SELECT id,floor,capacity,note FROM room")) {
                 ResultSet rs = st.executeQuery();
                 List<Room> result = new ArrayList<>();
                 while (rs.next()) {
-                    result.add(resultSetToGrave(rs));
+                    result.add(resultSetToRoom(rs));
                 }
                 return result;
             }

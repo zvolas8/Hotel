@@ -15,7 +15,7 @@ import java.util.List;
 public interface RoomManager {
     public void createRoom(Room room) throws IllegalArgumentException;
     
-    public void deleteRoom(long id);
+    public void deleteRoom(Long id);
     
     public void updateRoom(Room room) throws IllegalArgumentException;
     

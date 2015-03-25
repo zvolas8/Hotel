@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author marek
  */
 public class Guest {
-    private long id;
+    private Long id;
     private String name;
     private String surname;
     private String address;
@@ -23,14 +23,14 @@ public class Guest {
     /**
      * @return the id
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

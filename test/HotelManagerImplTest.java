@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public class HotelManagerImplTest {
     
-    private HotelManagerImpl manager;
+   /* private HotelManagerImpl manager;
     private RoomManagerImpl roomManager;
     private GuestManagerImpl guestManager;
     
@@ -32,7 +32,7 @@ public class HotelManagerImplTest {
         guestManager = new GuestManagerImpl();
     }
     
-  /*  @Test
+    @Test
     public void findAllEmptyRooms(){
         Guest guest = newGuest("John","Smith","123 Fake St.", "020202");
         Room room1 = newRoom(1, 4, 3, "Pokoj s bezbarierovým přístupem");

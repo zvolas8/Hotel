@@ -57,7 +57,6 @@ public class RoomManagerImplTest {
         manager.createRoom(room);
         
         Long roomID = room.getId();
-        System.out.println(roomID);
         assertNotNull(roomID);
     }
     
@@ -230,6 +229,7 @@ public class RoomManagerImplTest {
         list.add(room3);
         list.add(room4);
         assertEquals(list.size(), manager.findAllRoom().size());
+        assertDeepEquals(list, manager.findAllRoom());
     }
     
     private static Room newRoom(int floor, int capacity, String note){
