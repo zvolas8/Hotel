@@ -113,7 +113,7 @@ public class RoomManagerImplTest {
     }
     
     @Test
-    public void updateGrave() {
+    public void updateRoom() {
         Room room = newRoom(3, 6,"nic");
         Room room2 = newRoom(2, 6,"neco");
         manager.createRoom(room);
@@ -138,7 +138,7 @@ public class RoomManagerImplTest {
     }
 
     @Test
-    public void updateGraveWithWrongAttributes() {
+    public void updateRoomWithWrongAttributes() {
 
         Room room = newRoom(2, 4,"záchod");
         manager.createRoom(room);

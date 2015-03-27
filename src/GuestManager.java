@@ -21,7 +21,7 @@ public interface GuestManager {
     
     public Guest getGuestById(Long id);
     
-    public List<Guest> getGuestsBySurname(String Surname);
+    public List<Guest> getGuestsBySurname(String surname);
     
     public List<Guest> findAllGuest();
 }

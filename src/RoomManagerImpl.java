@@ -120,8 +120,7 @@ public class RoomManagerImpl implements RoomManager{
     public void updateRoom(Room room) {
         checkDataSource();
         if(room==null) throw new IllegalArgumentException("room pointer is null");
-        if(room.getId()==null) throw new IllegalArgumentException("room with null id cannot be updated");
-        
+        if(room.getId()==null) throw new IllegalArgumentException("room with null id cannot be updated");        
         if(room.getFloor()<0) throw new IllegalArgumentException("room floor is negative number");
         if(room.getCapacity()<1) throw new IllegalArgumentException("room capacity is not positive number");
 
@@ -137,7 +136,7 @@ public class RoomManagerImpl implements RoomManager{
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error when updating room", ex);
-            throw new ServiceFailureException("Error when retrieving all room", ex);
+            throw new ServiceFailureException("Error when updating room", ex);
         }
     }
 

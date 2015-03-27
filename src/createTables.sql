@@ -1,0 +1,19 @@
+CREATE TABLE "GUEST"(
+    "id" BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    "name" VARCHAR(50),
+    "surname" VARCHAR(70),
+    "address" VARCHAR(255),
+    "phonenumber" VARCHAR(15))
+
+CREATE TABLE "ROOM"(
+    "id" BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    "floor" INT,
+    "capacity" INT NOT NULL,
+    "note" VARCHAR(255))
+
+CREATE TABLE "STAY"(
+    "id" BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    "GUETS_ID" BIGINT NOT NULL,
+    "ROOM_ID" BIGINT NOT NULL,
+    -- ještě tu určitě něco bude :D
+)

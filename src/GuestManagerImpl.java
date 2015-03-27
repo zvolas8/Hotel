@@ -130,7 +130,30 @@ public class GuestManagerImpl implements GuestManager{
 
     @Override
     public void updateGuest(Guest guest) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkDataSource();
+        if(guest==null) throw new IllegalArgumentException("guest pointer is null");
+        if(guest.getId()==null) throw new IllegalArgumentException("guest with null id cannot be updated");
+        if(guest.getName()==null) throw new IllegalArgumentException("guest with null name cannot be updated");
+        if(guest.getSurname()==null) throw new IllegalArgumentException("guest with null surname cannot be updated");
+        if(guest.getAddress()==null) throw new IllegalArgumentException("guest with null address cannot be updated");
+        if(guest.getPhoneNumber()==null) throw new IllegalArgumentException("guest with null phonenumber cannot be updated");
+
+        try (Connection conn = dataSource.getConnection()) {
+            try(PreparedStatement st = conn.prepareStatement("UPDATE guest SET name=?,surname=?,address=?, phonenumber=? WHERE id=?")) {
+                st.setString(1,guest.getName());
+                st.setString(2,guest.getSurname());
+                st.setString(3,guest.getAddress());
+                st.setString(4, guest.getPhoneNumber());
+                st.setLong(5,guest.getId());
+             
+                if(st.executeUpdate()!=1) {
+                    throw new IllegalArgumentException("cannot update guest "+guest);
+                }
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error when updating guest", ex);
+            throw new ServiceFailureException("Error when updating guest", ex);
+        }
     }
 
     @Override
@@ -159,8 +182,29 @@ public class GuestManagerImpl implements GuestManager{
     }
 
     @Override
-    public List<Guest> getGuestsBySurname(String Surname) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Guest> getGuestsBySurname(String surname) {
+        if(surname==null){
+            throw new IllegalArgumentException("surname cannot be null");
+        }
+        checkDataSource();
+        
+        try(Connection conn = dataSource.getConnection()){
+            try(PreparedStatement st = conn.prepareStatement("SELECT id, name, surname, address, phonenumber FROM guest WHERE surname = ?")){
+                st.setString(1, surname);
+                ResultSet rs = st.executeQuery();
+                List<Guest> result = new ArrayList<>();
+                while(rs.next()){
+                    Guest guest = resultSetToGuest(rs);
+                    if(guest.getSurname().equals(surname)){
+                        result.add(guest);
+                    }      
+                }
+                return result;
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE,"Error when retrieving guets by surname");
+            throw new ServiceFailureException("Error when retrieving guets by surname");
+        }
     }
 
     @Override
