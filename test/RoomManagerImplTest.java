@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,7 +40,8 @@ public class RoomManagerImplTest {
                     + "id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
                     + "floor INT,"
                     + "capacity INT NOT NULL,"
-                    + "note VARCHAR(255))").executeUpdate();
+                    + "note VARCHAR(255),"
+                    + "price INT)").executeUpdate();
         }
         manager = new RoomManagerImpl(bds);
     }
@@ -53,7 +55,8 @@ public class RoomManagerImplTest {
     
     @Test
     public void createRoom(){
-        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem");
+        BigDecimal price = new BigDecimal(2000);
+        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
         manager.createRoom(room);
         
         Long roomID = room.getId();
@@ -62,13 +65,14 @@ public class RoomManagerImplTest {
     
     @Test
     public void createRoomWithWrongArgument(){
+        BigDecimal price = new BigDecimal(2000);
         try{
            manager.createRoom(null);
            fail();
         } catch(IllegalArgumentException ex){
             //ok
         }   
-        Room room = newRoom(5, 4, "se záporným id");
+        Room room = newRoom(5, 4, "se záporným id",price);
         try{
            manager.createRoom(null);
            fail();
@@ -76,7 +80,7 @@ public class RoomManagerImplTest {
             //ok
         }
         
-        Room room1 = newRoom(-5, 4, "sklep");
+        Room room1 = newRoom(-5, 4, "sklep",price);
         try{
             manager.createRoom(room1);
             fail();
@@ -84,7 +88,7 @@ public class RoomManagerImplTest {
             //ok
         }
         
-        Room room2 = newRoom(5, -4, "se záporným počtem postelí");
+        Room room2 = newRoom(5, -4, "se záporným počtem postelí",price);
         try{    
             manager.createRoom(room2);
             fail();
@@ -96,9 +100,11 @@ public class RoomManagerImplTest {
     @Test
     public void deleteRoom(){
         Long id = new Long(2);
-        Room room1 = newRoom(4, 3, "rozbitá vana");
-        Room room2 = newRoom(4, 3, "postýlka pro děti");
-        Room room3 = newRoom(3, 5, "ok");
+        BigDecimal price = new BigDecimal(2000);
+        BigDecimal price2 = new BigDecimal(4000);
+        Room room1 = newRoom(4, 3, "rozbitá vana",price);
+        Room room2 = newRoom(4, 3, "postýlka pro děti",price);
+        Room room3 = newRoom(3, 5, "ok",price2);
         manager.createRoom(room1);
         manager.createRoom(room2);
         manager.createRoom(room3);
@@ -114,8 +120,10 @@ public class RoomManagerImplTest {
     
     @Test
     public void updateRoom() {
-        Room room = newRoom(3, 6,"nic");
-        Room room2 = newRoom(2, 6,"neco");
+        BigDecimal price = new BigDecimal(2000);
+        BigDecimal price2 = new BigDecimal(5000);
+        Room room = newRoom(3, 6,"nic",price);
+        Room room2 = newRoom(2, 6,"neco",price);
         manager.createRoom(room);
         manager.createRoom(room2);
         Long roomId = room.getId();
@@ -133,14 +141,22 @@ public class RoomManagerImplTest {
         assertEquals(2, room.getFloor());
         assertEquals(6, room.getCapacity());
         assertEquals("neco", room.getNote());
+        
+        room = manager.getRoomById(roomId);
+        room.setPricePerNight(price2);
+        manager.updateRoom(room);
+        assertEquals(2, room.getFloor());
+        assertEquals(6, room.getCapacity());
+        assertEquals(new BigDecimal(5000), room.getPricePerNight());
+        
 
         assertDeepEquals(room2, manager.getRoomById(room2.getId()));
     }
 
     @Test
     public void updateRoomWithWrongAttributes() {
-
-        Room room = newRoom(2, 4,"záchod");
+        BigDecimal price = new BigDecimal(2000);
+        Room room = newRoom(2, 4,"záchod",price);
         manager.createRoom(room);
         Long roomId = room.getId();
 
@@ -191,7 +207,8 @@ public class RoomManagerImplTest {
     @Test
     public void getRoomById(){
         Long id = new Long(1);
-        Room room = newRoom(2, 4, "ok");
+        BigDecimal price = new BigDecimal(2000);
+        Room room = newRoom(2, 4, "ok",price);
         manager.createRoom(room);
         List<Room> list = new ArrayList<>();
         list.add(room);
@@ -215,10 +232,12 @@ public class RoomManagerImplTest {
     
     @Test
     public void findAllRoom(){
-        Room room1 = newRoom(4, 3, "rozbitá vana");
-        Room room2 = newRoom(4, 3, "postýlka pro děti");
-        Room room3 = newRoom(3, 5, "ok");
-        Room room4 = newRoom(2, 4, "ok");
+        BigDecimal price = new BigDecimal(2000);
+        BigDecimal price2 = new BigDecimal(4500);
+        Room room1 = newRoom(4, 3, "rozbitá vana",price);
+        Room room2 = newRoom(4, 3, "postýlka pro děti",price2);
+        Room room3 = newRoom(3, 5, "ok",price2);
+        Room room4 = newRoom(2, 4, "ok",price);
         manager.createRoom(room1);
         manager.createRoom(room2);
         manager.createRoom(room3);
@@ -232,11 +251,12 @@ public class RoomManagerImplTest {
         assertDeepEquals(list, manager.findAllRoom());
     }
     
-    private static Room newRoom(int floor, int capacity, String note){
+    private static Room newRoom(int floor, int capacity, String note, BigDecimal price){
         Room room = new Room();
         room.setFloor(floor);
         room.setCapacity(capacity);
         room.setNote(note);
+        room.setPricePerNight(price);
         return room;
     }
     
@@ -253,5 +273,6 @@ public class RoomManagerImplTest {
         assertEquals(expected.getFloor(), actual.getFloor());
         assertEquals(expected.getCapacity(), actual.getCapacity());
         assertEquals(expected.getNote(), actual.getNote());
+        assertEquals(expected.getPricePerNight(), actual.getPricePerNight());
     }
 }

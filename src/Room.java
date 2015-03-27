@@ -1,3 +1,6 @@
+
+import java.math.BigDecimal;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,6 +16,7 @@ public class Room {
     private int floor;
     private int capacity;
     private String note;
+    private BigDecimal pricePerNight;
     
     public Room(){}
 
@@ -70,6 +74,20 @@ public class Room {
      */
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+    
+    /**
+     * @return the pricePerNight
+     */
+    public BigDecimal getPricePerNight() {
+        return pricePerNight;
+    }
+
+    /**
+     * @param pricePerNight the pricePerNight to set
+     */
+    public void setPricePerNight(BigDecimal pricePerNight) {
+        this.pricePerNight = pricePerNight;
     }
     
     /**

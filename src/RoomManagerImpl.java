@@ -51,7 +51,11 @@ public class RoomManagerImpl implements RoomManager{
         
         if(room.getNote() == null){
             throw new IllegalArgumentException("note cannot be null");
-        }        
+        }    
+        
+        if(room.getPricePerNight() == null){
+            throw new IllegalArgumentException("PricePerNight cannot be null");
+        }
         return true;
     }
     
@@ -61,10 +65,11 @@ public class RoomManagerImpl implements RoomManager{
         checkDataSource();
         
         try(Connection conn = dataSource.getConnection()){
-            try(PreparedStatement st = conn.prepareStatement("INSERT INTO room (floor,capacity,note) VALUES (?,?,?)",Statement.RETURN_GENERATED_KEYS)){
+            try(PreparedStatement st = conn.prepareStatement("INSERT INTO room (floor,capacity,note,price) VALUES (?,?,?,?)",Statement.RETURN_GENERATED_KEYS)){
                 st.setInt(1, room.getFloor());
                 st.setInt(2, room.getCapacity());
                 st.setString(3, room.getNote());
+                st.setBigDecimal(4, room.getPricePerNight());
                 
                 int count = st.executeUpdate();
                 if (count != 1) {
@@ -123,13 +128,16 @@ public class RoomManagerImpl implements RoomManager{
         if(room.getId()==null) throw new IllegalArgumentException("room with null id cannot be updated");        
         if(room.getFloor()<0) throw new IllegalArgumentException("room floor is negative number");
         if(room.getCapacity()<1) throw new IllegalArgumentException("room capacity is not positive number");
-
+        if(room.getPricePerNight() == null) throw new IllegalArgumentException("pricePerNight cannot be null");
+        
         try (Connection conn = dataSource.getConnection()) {
-            try(PreparedStatement st = conn.prepareStatement("UPDATE room SET floor=?,capacity=?,note=? WHERE id=?")) {
+            try(PreparedStatement st = conn.prepareStatement("UPDATE room SET floor=?,capacity=?,note=?, price=? WHERE id=?")) {
                 st.setInt(1,room.getFloor());
                 st.setInt(2,room.getCapacity());
                 st.setString(3,room.getNote());
-                st.setLong(4,room.getId());
+                st.setBigDecimal(4, room.getPricePerNight());
+                st.setLong(5,room.getId());
+                
                 if(st.executeUpdate()!=1) {
                     throw new IllegalArgumentException("cannot update room "+room);
                 }
@@ -144,7 +152,7 @@ public class RoomManagerImpl implements RoomManager{
     public Room getRoomById(Long id) throws ServiceFailureException {
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
-            try (PreparedStatement st = conn.prepareStatement("SELECT id,floor,capacity,note FROM room WHERE id = ?")) {
+            try (PreparedStatement st = conn.prepareStatement("SELECT id,floor,capacity,note, price FROM room WHERE id = ?")) {
                 st.setLong(1, id);
                 ResultSet rs = st.executeQuery();
                 if (rs.next()) {
@@ -171,6 +179,7 @@ public class RoomManagerImpl implements RoomManager{
         room.setFloor(rs.getInt("floor"));
         room.setCapacity(rs.getInt("capacity"));
         room.setNote(rs.getString("note"));
+        room.setPricePerNight(rs.getBigDecimal("price"));
         return room;
     }
 
@@ -178,7 +187,7 @@ public class RoomManagerImpl implements RoomManager{
     public List<Room> findAllRoom() {
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
-            try (PreparedStatement st = conn.prepareStatement("SELECT id,floor,capacity,note FROM room")) {
+            try (PreparedStatement st = conn.prepareStatement("SELECT id,floor,capacity,note,price FROM room")) {
                 ResultSet rs = st.executeQuery();
                 List<Room> result = new ArrayList<>();
                 while (rs.next()) {
