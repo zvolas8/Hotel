@@ -1,5 +1,6 @@
 
 import java.util.Collection;
+import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,11 +15,11 @@ import java.util.Collection;
 public interface StayManager {
     public void createStay(Stay stay);
     
-    public void deleteStay(Stay stay);
+    public void deleteStay(Long id);
     
     public void updateStay(Stay stay);
     
-    public Stay getStayByID(long id);
+    public Stay getStayByID(Long id);
     
-    public Collection<Stay> findAllStay();
+    public List<Stay> findAllStay();
 }

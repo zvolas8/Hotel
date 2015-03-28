@@ -23,7 +23,7 @@ import javax.sql.DataSource;
  */
 public class GuestManagerImpl implements GuestManager{
 
-    private static final Logger logger = Logger.getLogger(RoomManagerImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(GuestManagerImpl.class.getName());
     
     private final DataSource dataSource;
 
@@ -86,6 +86,7 @@ public class GuestManagerImpl implements GuestManager{
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE,"Error when creating new room.",ex);
+            throw new ServiceFailureException("Error when creating guest", ex);
         }
     }
 
@@ -93,19 +94,19 @@ public class GuestManagerImpl implements GuestManager{
         if (keyRS.next()) {
             if (keyRS.getMetaData().getColumnCount() != 1) {
                 throw new ServiceFailureException("Internal Error: Generated key"
-                        + "retriving failed when trying to insert grave " + guest
+                        + "retriving failed when trying to insert stay " + guest
                         + " - wrong key fields count: " + keyRS.getMetaData().getColumnCount());
             }
             Long result = keyRS.getLong(1);
             if (keyRS.next()) {
                 throw new ServiceFailureException("Internal Error: Generated key"
-                        + "retriving failed when trying to insert grave " + guest
+                        + "retriving failed when trying to insert stay " + guest
                         + " - more keys found");
             }
             return result;
         } else {
             throw new ServiceFailureException("Internal Error: Generated key"
-                    + "retriving failed when trying to insert grave " + guest
+                    + "retriving failed when trying to insert stay " + guest
                     + " - no key found");
         }
     }

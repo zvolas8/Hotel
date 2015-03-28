@@ -80,6 +80,7 @@ public class RoomManagerImpl implements RoomManager{
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error when creating new room.", ex);
+            throw new ServiceFailureException("Error when creating room", ex);
         }
         
     }
@@ -88,19 +89,19 @@ public class RoomManagerImpl implements RoomManager{
         if (keyRS.next()) {
             if (keyRS.getMetaData().getColumnCount() != 1) {
                 throw new ServiceFailureException("Internal Error: Generated key"
-                        + "retriving failed when trying to insert grave " + room
+                        + "retriving failed when trying to insert room " + room
                         + " - wrong key fields count: " + keyRS.getMetaData().getColumnCount());
             }
             Long result = keyRS.getLong(1);
             if (keyRS.next()) {
                 throw new ServiceFailureException("Internal Error: Generated key"
-                        + "retriving failed when trying to insert grave " + room
+                        + "retriving failed when trying to insert room " + room
                         + " - more keys found");
             }
             return result;
         } else {
             throw new ServiceFailureException("Internal Error: Generated key"
-                    + "retriving failed when trying to insert grave " + room
+                    + "retriving failed when trying to insert room " + room
                     + " - no key found");
         }
     }

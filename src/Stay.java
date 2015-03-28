@@ -14,12 +14,11 @@ import java.util.Objects;
  * @author marek
  */
 public class Stay {
-    private long id;
+    private Long id;
     private Guest guest;
     private Room room;
-    private Date arrival;
-    private Date reservedUntil;
-    private Date realDepart;
+    private Date startOfStay;
+    private Date endOfStay;
     private BigDecimal price;
     
     public Stay(){}
@@ -27,14 +26,14 @@ public class Stay {
      /**
      * @return the id
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
     
@@ -65,47 +64,33 @@ public class Stay {
     public void setRoom(Room room) {
         this.room = room;
     }
-
+    
     /**
-     * @return the arrival
+     * @return the startOfStay
      */
-    public Date getArrival() {
-        return arrival;
+    public Date getStartOfStay() {
+        return startOfStay;
     }
 
     /**
-     * @param arrival the arrival to set
+     * @param startOfStay the startOfStay to set
      */
-    public void setArrival(Date arrival) {
-        this.arrival = arrival;
+    public void setStartOfStay(Date startOfStay) {
+        this.startOfStay = startOfStay;
     }
 
     /**
-     * @return the reservedUntil
+     * @return the endOfStay
      */
-    public Date getReservedUntil() {
-        return reservedUntil;
+    public Date getEndOfStay() {
+        return endOfStay;
     }
 
     /**
-     * @param reservedUntil the reservedUntil to set
+     * @param endOfStay the endOfStay to set
      */
-    public void setReservedUntil(Date reservedUntil) {
-        this.reservedUntil = reservedUntil;
-    }
-
-    /**
-     * @return the realDepart
-     */
-    public Date getRealDepart() {
-        return realDepart;
-    }
-
-    /**
-     * @param realDepart the realDepart to set
-     */
-    public void setRealDepart(Date realDepart) {
-        this.realDepart = realDepart;
+    public void setEndOfStay(Date endOfStay) {
+        this.endOfStay = endOfStay;
     }
 
     /**
