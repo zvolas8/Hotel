@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Sat Mar 28 15:15:40 CET 2015:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance a816c00e-014c-60bc-fd2b-00000096d8e0 
-on database directory memory:C:\Users\marek\Documents\Git\Hotel\StayManagerTest with class loader sun.misc.Launcher$AppClassLoader@1453f44 
+Mon Mar 30 16:50:56 CEST 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance a816c00e-014c-6b29-fcc8-000000955e20 
+on database directory memory:C:\Users\marek\Documents\Git\Hotel\stayManagerTest with class loader sun.misc.Launcher$AppClassLoader@644d46 
 Loaded from file:/C:/Program%20Files/NetBeans%208.0.2/Libraries/derby-10.11.1.1.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_31-b13
