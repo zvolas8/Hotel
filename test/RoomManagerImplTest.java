@@ -109,9 +109,9 @@ public class RoomManagerImplTest {
         manager.createRoom(room2);
         manager.createRoom(room3);
         manager.deleteRoom(id);
-        Collection<Room> result = manager.findAllRoom();
+        List<Room> result = manager.findAllRoom();
         
-        Collection<Room> list = new ArrayList<>();
+        List<Room> list = new ArrayList<>();
         list.add(room1);
         list.add(room3);
         

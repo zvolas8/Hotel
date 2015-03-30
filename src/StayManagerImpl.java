@@ -187,7 +187,7 @@ public class StayManagerImpl implements StayManager{
     public List<Stay> findAllStay() {
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
-            try (PreparedStatement st = conn.prepareStatement("SELECT id, guest_id, room_id, start_of_stay, end_of_stay, total_price FROM stay")) {
+            try (PreparedStatement st = conn.prepareStatement("SELECT id, guest_id, room_id, start_of_stay, end_of_stay, total_price FROM stay,room,guest WHERE stay.guets_id = stay.id, stay.room_id = room.id")) {
                 ResultSet rs = st.executeQuery();
                 List<Stay> result = new ArrayList<>();
                 while (rs.next()) {
@@ -204,7 +204,7 @@ public class StayManagerImpl implements StayManager{
     private Stay resultSetToStay(ResultSet rs) throws SQLException {
         Stay stay = new Stay();
         stay.setId(rs.getLong("id"));
-        stay.setGuest(new GuestManagerImpl(dataSource).getGuestById(rs.getLong("guest_id")));
+        //stay.setGuest(new GuestManagerImpl(dataSource).getGuestById(rs.getLong("guest_id");
         stay.setRoom(getRoom(rs));
         stay.setStartOfStay(rs.getDate("start_of_stay"));
         stay.setEndOfStay(rs.getDate("end_of_stay"));
