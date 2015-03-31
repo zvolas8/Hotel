@@ -1,5 +1,6 @@
 
 import java.util.Collection;
+import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -20,9 +21,9 @@ public interface HotelManager {
     
     public Guest findCurrentGuestWithRoom(Room room);
     
-    public Collection<Room> findAllEmptyRooms();
+    public List<Room> findAllEmptyRooms();
     
-    public Collection<Stay> findStaysForGuest(Guest guest);
+    public List<Stay> findStaysForGuest(Guest guest);
     
-    public Collection<Stay> findStaysForRoom(Room room);
+    public List<Stay> findStaysForRoom(Room room);
 }
