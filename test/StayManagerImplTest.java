@@ -47,23 +47,6 @@ public class StayManagerImplTest {
         manager = new StayManagerImpl(dataSource);
         guestManager = new GuestManagerImpl(dataSource);
         roomManager = new RoomManagerImpl(dataSource);
-        //estateAgency = new EstateAgencyImpl();
-        //estateAgency.setDataSource(dataSource);  
-        
-        /*BasicDataSource bds = new BasicDataSource();
-        bds.setUrl("jdbc:derby:memory:StayManagerTest;create=true");
-        this.dataSource = bds;
-        
-        try (Connection conn = bds.getConnection()) {
-            conn.prepareStatement("CREATE TABLE STAY ("
-                    + "id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
-                    + "guest_id BIGINT,"
-                    + "room_id BIGINT,"
-                    + "start_of_stay DATE,"
-                    + "end_of_stay DATE,"
-                    + "total_price INT)").executeUpdate();
-        }
-        manager = new StayManagerImpl(bds);*/
     }
     
    @After
@@ -116,6 +99,72 @@ public class StayManagerImplTest {
        
         
         assertEquals(list.size(), result.size());
+    }
+    
+    @Test
+    public void updateStay(){
+        BigDecimal price = new BigDecimal(2000);
+        BigDecimal price2 = new BigDecimal(1500);
+        Date start = new Date(2015, 3, 20);
+        Date start2 = new Date(2015, 3, 24);
+        Date end = new Date(2015, 3, 26);
+        Date end2 = new Date(2015, 3, 27);
+        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
+        Room room2 = newRoom(3, 2, "bez oken",price2);
+        Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
+        Guest guest2 = newGuest("Sergio","Ramos","Santiago Bernabeu","456987159");
+        roomManager.createRoom(room);
+        roomManager.createRoom(room2);
+        guestManager.createGuest(guest);
+        guestManager.createGuest(guest2);
+        Stay stay = newStay(guest, room, start, end, price);
+        manager.createStay(stay);
+        
+        stay = manager.getStayByID(Long.valueOf(1));
+        stay.setPrice(price2);
+        manager.updateStay(stay);
+        assertEquals(BigDecimal.valueOf(1500), stay.getPrice());
+        assertEquals(start, stay.getStartOfStay());
+        
+        stay = manager.getStayByID(Long.valueOf(1));
+        stay.setStartOfStay(start2);
+        manager.updateStay(stay);
+        assertEquals(BigDecimal.valueOf(1500), stay.getPrice());
+        assertEquals(start2, stay.getStartOfStay());
+        
+        stay = manager.getStayByID(Long.valueOf(1));
+        stay.setGuest(guest2);
+        manager.updateStay(stay);
+        assertEquals(BigDecimal.valueOf(1500), stay.getPrice());
+        assertEquals(start2, stay.getStartOfStay());
+        assertEquals(guest2.getName(), stay.getGuest().getName());
+    }
+    
+    @Test
+    public void getStayById(){
+        BigDecimal price = new BigDecimal(2000);
+        BigDecimal price2 = new BigDecimal(1500);
+        Date start = new Date(2015, 3, 20);
+        Date start2 = new Date(2015, 3, 24);
+        Date end = new Date(2015, 3, 26);
+        Date end2 = new Date(2015, 3, 27);
+        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
+        Room room2 = newRoom(3, 2, "bez oken",price2);
+        Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
+        Guest guest2 = newGuest("Sergio","Ramos","Santiago Bernabeu","456987159");
+        roomManager.createRoom(room);
+        roomManager.createRoom(room2);
+        guestManager.createGuest(guest);
+        guestManager.createGuest(guest2);
+        Stay stay = newStay(guest, room, start, end, price);
+        Stay stay2 = newStay(guest2, room2, start2, end2, price2);
+        manager.createStay(stay);
+        manager.createStay(stay2);
+        
+        Stay result = manager.getStayByID(Long.valueOf(2));
+        assertEquals(stay2.getId(), result.getId());
+        assertEquals(stay2.getPrice(), result.getPrice());
+        assertEquals(stay2.getEndOfStay(), result.getEndOfStay());
     }
     
     @Test 

@@ -162,7 +162,7 @@ public class StayManagerImpl implements StayManager{
     public Stay getStayByID(Long id) {
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
-            try (PreparedStatement st = conn.prepareStatement("SELECT id, guest_id, room_id, start_of_stay, end_of_stay, total_price  FROM stay WHERE id = ?")) {
+            try (PreparedStatement st = conn.prepareStatement("SELECT * FROM stay,room,guest WHERE (stay.guest_id = guest.id AND stay.room_id = room.id) AND stay.id=?")) {
                 st.setLong(1, id);
                 ResultSet rs = st.executeQuery();
                 if (rs.next()) {
@@ -179,7 +179,7 @@ public class StayManagerImpl implements StayManager{
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE,"Error when retrieving stay.", ex);
-            throw new ServiceFailureException("Error when retrieving all stays", ex);
+            throw new ServiceFailureException("Error when retrieving stay", ex);
         }
     }
 
@@ -187,7 +187,7 @@ public class StayManagerImpl implements StayManager{
     public List<Stay> findAllStay() {
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
-            try (PreparedStatement st = conn.prepareStatement("SELECT id, guest_id, room_id, start_of_stay, end_of_stay, total_price FROM stay,room,guest WHERE stay.guets_id = stay.id, stay.room_id = room.id")) {
+            try (PreparedStatement st = conn.prepareStatement("SELECT * FROM stay,room,guest WHERE (stay.guest_id = guest.id AND stay.room_id = room.id)")) {
                 ResultSet rs = st.executeQuery();
                 List<Stay> result = new ArrayList<>();
                 while (rs.next()) {
@@ -204,7 +204,7 @@ public class StayManagerImpl implements StayManager{
     private Stay resultSetToStay(ResultSet rs) throws SQLException {
         Stay stay = new Stay();
         stay.setId(rs.getLong("id"));
-        //stay.setGuest(new GuestManagerImpl(dataSource).getGuestById(rs.getLong("guest_id");
+        stay.setGuest(getGuest(rs));
         stay.setRoom(getRoom(rs));
         stay.setStartOfStay(rs.getDate("start_of_stay"));
         stay.setEndOfStay(rs.getDate("end_of_stay"));
@@ -212,10 +212,15 @@ public class StayManagerImpl implements StayManager{
         return stay;
     }
     
-   /* private Guest getGuest(ResultSet rs){
+    private Guest getGuest(ResultSet rs) throws SQLException{
         Guest guest = new Guest();
+        guest.setId(rs.getLong("id"));
+        guest.setName(rs.getString("name"));
+        guest.setSurname(rs.getString("surname"));
+        guest.setAddress(rs.getString("address"));
+        guest.setPhoneNumber(rs.getString("phonenumber"));
         return guest;
-    } */
+    }
     
     private Room getRoom(ResultSet rs) throws SQLException{
         Room room = new Room();
