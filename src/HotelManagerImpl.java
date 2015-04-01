@@ -36,16 +36,6 @@ public class HotelManagerImpl implements HotelManager{
             throw new IllegalStateException("DataSource is not set");
         }
     }
-    
-    /*@Override
-    public void putGuestInRoom(Guest guest, Room room) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void removeGuestFromRoom(Guest guest, Room room) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }*/
 
     @Override
     public Room findCurrentRoomWithGuest(Guest guest) {
@@ -64,7 +54,7 @@ public class HotelManagerImpl implements HotelManager{
                     }
                     return room;
                 } else {
-                    return new Room();
+                    return null;
                 }
             }
         } catch (SQLException ex) {
@@ -90,7 +80,7 @@ public class HotelManagerImpl implements HotelManager{
                     }
                     return guest;
                 } else {
-                    return new Guest();
+                    return null;
                 }
             }
         } catch (SQLException ex) {

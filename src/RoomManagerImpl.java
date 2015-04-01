@@ -33,7 +33,7 @@ public class RoomManagerImpl implements RoomManager{
         }
     }
     
-    public boolean checkRoom(Room room){
+    private boolean checkRoom(Room room){
         if(room==null){
             throw new IllegalArgumentException("room cannot be null!");
         }

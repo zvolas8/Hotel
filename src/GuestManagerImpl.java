@@ -38,7 +38,7 @@ public class GuestManagerImpl implements GuestManager{
         }
     }
     
-    public boolean checkGuest(Guest guest){
+    private boolean checkGuest(Guest guest){
         if(guest == null){
             throw new IllegalArgumentException("guest cannot be null");
         }

@@ -41,7 +41,7 @@ public class StayManagerImpl implements StayManager{
         }
     }
     
-    public boolean checkStay(Stay stay){
+    private boolean checkStay(Stay stay){
         if(stay.getId() != null){
             throw new IllegalArgumentException("");
         }
