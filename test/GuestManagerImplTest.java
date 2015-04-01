@@ -99,7 +99,7 @@ public class GuestManagerImplTest {
     }
 
     @Test
-    public void updateGraveWithWrongAttributes() {
+    public void updateGuestWithWrongAttributes() {
 
         Guest guest1 = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
         manager.createGuest(guest1);

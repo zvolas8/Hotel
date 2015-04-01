@@ -7,8 +7,9 @@
 import common.DBUtils;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
+//import java.sql.Date;
 import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +22,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 
@@ -54,17 +59,26 @@ public class StayManagerImplTest {
         DBUtils.executeSqlScript(dataSource, StayManager.class.getResource("dropTables.sql"));
     }
     
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private Date date(String date) {
+        try {
+            return DATE_FORMAT.parse(date);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    
     @Test
     public void createRoom(){
         BigDecimal price = new BigDecimal(2000);
-        Date start = new Date(2015, 3, 20);
-        Date end = new Date(2015, 3, 26);
+        //Date start = new Date(2015, 3, 20);
+        //Date end = new Date(2015, 3, 26);
         Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
         guestManager.createGuest(guest);
         roomManager.createRoom(room);
-        Stay stay = newStay(guest, room, start, end, price);
-
+        Stay stay = newStay(guest, room, date("2014-08-11"), date("2014-08-11"), price);
+        
         manager.createStay(stay);
         
         Long stayID = stay.getId();
@@ -75,10 +89,10 @@ public class StayManagerImplTest {
     public void deleteRoom(){
         BigDecimal price = new BigDecimal(2000);
         BigDecimal price2 = new BigDecimal(1500);
-        Date start = new Date(2015, 3, 20);
-        Date start2 = new Date(2015, 3, 24);
-        Date end = new Date(2015, 3, 26);
-        Date end2 = new Date(2015, 3, 27);
+        //Date start = new Date(2015, 3, 20);
+        //Date start2 = new Date(2015, 3, 24);
+        //Date end = new Date(2015, 3, 26);
+        //Date end2 = new Date(2015, 3, 27);
         Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
         Room room2 = newRoom(3, 2, "bez oken",price2);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
@@ -87,8 +101,8 @@ public class StayManagerImplTest {
         roomManager.createRoom(room2);
         guestManager.createGuest(guest);
         guestManager.createGuest(guest2);
-        Stay stay = newStay(guest, room, start, end, price);
-        Stay stay2 = newStay(guest2, room2, start2, end2, price2);
+        Stay stay = newStay(guest, room, date("2014-08-12"), date("2015-08-12"), price);
+        Stay stay2 = newStay(guest2, room2, date("2014-08-12"), date("2014-09-12"), price2);
         manager.createStay(stay);
         manager.createStay(stay2);
         manager.deleteStay(Long.valueOf(2));
@@ -105,10 +119,10 @@ public class StayManagerImplTest {
     public void updateStay(){
         BigDecimal price = new BigDecimal(2000);
         BigDecimal price2 = new BigDecimal(1500);
-        Date start = new Date(2015, 3, 20);
-        Date start2 = new Date(2015, 3, 24);
-        Date end = new Date(2015, 3, 26);
-        Date end2 = new Date(2015, 3, 27);
+        //Date start = new Date(2015, 3, 20);
+        //Date start2 = new Date(2015, 3, 24);
+        //Date end = new Date(2015, 3, 26);
+        //Date end2 = new Date(2015, 3, 27);
         Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
         Room room2 = newRoom(3, 2, "bez oken",price2);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
@@ -117,26 +131,26 @@ public class StayManagerImplTest {
         roomManager.createRoom(room2);
         guestManager.createGuest(guest);
         guestManager.createGuest(guest2);
-        Stay stay = newStay(guest, room, start, end, price);
+        Stay stay = newStay(guest, room, date("2015-02-21"), date("2015-03-24"), price);
         manager.createStay(stay);
         
         stay = manager.getStayByID(Long.valueOf(1));
         stay.setPrice(price2);
         manager.updateStay(stay);
         assertEquals(BigDecimal.valueOf(1500), stay.getPrice());
-        assertEquals(start, stay.getStartOfStay());
+        assertEquals(date("2015-02-21"), stay.getStartOfStay());
         
         stay = manager.getStayByID(Long.valueOf(1));
-        stay.setStartOfStay(start2);
+        stay.setStartOfStay(date("2015-01-24"));
         manager.updateStay(stay);
         assertEquals(BigDecimal.valueOf(1500), stay.getPrice());
-        assertEquals(start2, stay.getStartOfStay());
+        assertEquals(date("2015-01-24"), stay.getStartOfStay());
         
         stay = manager.getStayByID(Long.valueOf(1));
         stay.setGuest(guest2);
         manager.updateStay(stay);
         assertEquals(BigDecimal.valueOf(1500), stay.getPrice());
-        assertEquals(start2, stay.getStartOfStay());
+        assertEquals(date("2015-01-24"), stay.getStartOfStay());
         assertEquals(guest2.getName(), stay.getGuest().getName());
     }
     
@@ -144,10 +158,10 @@ public class StayManagerImplTest {
     public void getStayById(){
         BigDecimal price = new BigDecimal(2000);
         BigDecimal price2 = new BigDecimal(1500);
-        Date start = new Date(2015, 3, 20);
-        Date start2 = new Date(2015, 3, 24);
-        Date end = new Date(2015, 3, 26);
-        Date end2 = new Date(2015, 3, 27);
+        //Date start = new Date(2015, 3, 20);
+        //Date start2 = new Date(2015, 3, 24);
+        //Date end = new Date(2015, 3, 26);
+        //Date end2 = new Date(2015, 3, 27);
         Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
         Room room2 = newRoom(3, 2, "bez oken",price2);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
@@ -156,8 +170,8 @@ public class StayManagerImplTest {
         roomManager.createRoom(room2);
         guestManager.createGuest(guest);
         guestManager.createGuest(guest2);
-        Stay stay = newStay(guest, room, start, end, price);
-        Stay stay2 = newStay(guest2, room2, start2, end2, price2);
+        Stay stay = newStay(guest, room, date("2015-01-17"), date("2015-01-25"), price);
+        Stay stay2 = newStay(guest2, room2, date("2015-01-14"), date("2015-01-26"), price2);
         manager.createStay(stay);
         manager.createStay(stay2);
         
@@ -171,10 +185,10 @@ public class StayManagerImplTest {
     public void findAllStay(){
         BigDecimal price = new BigDecimal(2000);
         BigDecimal price2 = new BigDecimal(1500);
-        Date start = new Date(2015, 3, 20);
-        Date start2 = new Date(2015, 3, 24);
-        Date end = new Date(2015, 3, 26);
-        Date end2 = new Date(2015, 3, 27);
+        //Date start = new Date(2015, 3, 20);
+        //Date start2 = new Date(2015, 3, 24);
+        //Date end = new Date(2015, 3, 26);
+        //Date end2 = new Date(2015, 3, 27);
         Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
         Room room2 = newRoom(3, 2, "bez oken",price2);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
@@ -183,8 +197,8 @@ public class StayManagerImplTest {
         roomManager.createRoom(room2);
         guestManager.createGuest(guest);
         guestManager.createGuest(guest2);
-        Stay stay = newStay(guest, room, start, end, price);
-        Stay stay2 = newStay(guest2, room2, start2, end2, price2);
+        Stay stay = newStay(guest, room, date("2015-01-17"), date("2015-01-25"), price);
+        Stay stay2 = newStay(guest2, room2, date("2015-01-14"), date("2015-01-26"), price2);
         manager.createStay(stay);
         manager.createStay(stay2);
         List<Stay> result = manager.findAllStay();

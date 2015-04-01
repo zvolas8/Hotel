@@ -13,9 +13,9 @@ import java.util.List;
  * @author marek
  */
 public interface HotelManager {
-    public void putGuestInRoom(Guest guest, Room room);
+    /*public void putGuestInRoom(Guest guest, Room room);
     
-    public void removeGuestFromRoom(Guest guest, Room room);
+    public void removeGuestFromRoom(Guest guest, Room room);*/
     
     public Room findCurrentRoomWithGuest(Guest guest);
     

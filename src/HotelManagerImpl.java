@@ -37,7 +37,7 @@ public class HotelManagerImpl implements HotelManager{
         }
     }
     
-    @Override
+    /*@Override
     public void putGuestInRoom(Guest guest, Room room) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -45,22 +45,79 @@ public class HotelManagerImpl implements HotelManager{
     @Override
     public void removeGuestFromRoom(Guest guest, Room room) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    }*/
 
     @Override
     public Room findCurrentRoomWithGuest(Guest guest) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(guest.getId() == null){
+            throw new IllegalArgumentException("guest id cannot be null");
+        }
+        
+        try(Connection conn = dataSource.getConnection()){
+            try(PreparedStatement st = conn.prepareStatement("SELECT * FROM stay,room WHERE stay.guest_id = ? AND stay.start_of_stay < CURRENT_TIMESTAMP AND stay.end_of_stay > CURRENT_TIMESTAMP AND stay.room_id = room.id")){
+                st.setLong(1, guest.getId());
+                ResultSet rs = st.executeQuery();
+                if (rs.next()) {
+                    Room room = getRoom(rs);
+                    if (rs.next()) {
+                        throw new ServiceFailureException("more rooms for one guest");
+                    }
+                    return room;
+                } else {
+                    return new Room();
+                }
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE,"Error whne find current room with guest",ex);
+            throw new ServiceFailureException("Error whne find current room with guest");
+        }
     }
 
     @Override
     public Guest findCurrentGuestWithRoom(Room room) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(room.getId() == null){
+            throw new IllegalArgumentException("room id cannot be null");
+        }
+        
+        try(Connection conn = dataSource.getConnection()){
+            try(PreparedStatement st = conn.prepareStatement("SELECT * FROM stay,guest WHERE stay.room_id = ? AND stay.start_of_stay < CURRENT_TIMESTAMP AND stay.end_of_stay > CURRENT_TIMESTAMP AND stay.room_id = guest.id")){
+                st.setLong(1, room.getId());
+                ResultSet rs = st.executeQuery();
+                if (rs.next()) {
+                    Guest guest = getGuest(rs);
+                    if (rs.next()) {
+                        throw new ServiceFailureException("more guests for one guest");
+                    }
+                    return guest;
+                } else {
+                    return new Guest();
+                }
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE,"Error whne find current guest with room",ex);
+            throw new ServiceFailureException("Error whne find current guest with room");
+        }
     }
 
     @Override
     public List<Room> findAllEmptyRooms() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        checkDataSource();
+        try(Connection conn = dataSource.getConnection()){
+            try(PreparedStatement st = conn.prepareStatement("SELECT * FROM ROOM where room.id NOT IN( SELECT stay.room_id FROM stay WHERE stay.start_of_stay < CURRENT_TIMESTAMP and stay.end_of_stay > CURRENT_TIMESTAMP)")){
+                List<Room> result = new ArrayList<>();
+                ResultSet rs = st.executeQuery();
+                while(rs.next()){
+                    result.add(getRoom(rs));
+                }
+                return result;
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE,"Error when find all empty rooms",ex);
+            throw new ServiceFailureException("Error when find all empty rooms");
+        }
+        
+        
+    }   
 
     @Override
     public List<Stay> findStaysForGuest(Guest guest) {

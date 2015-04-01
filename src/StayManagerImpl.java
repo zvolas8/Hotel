@@ -1,12 +1,14 @@
 
 import java.sql.Connection;
-import java.sql.Date;
+//import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,8 +76,10 @@ public class StayManagerImpl implements StayManager{
             try(PreparedStatement st = conn.prepareStatement("INSERT INTO stay (guest_id, room_id, start_of_stay, end_of_stay, total_price) VALUES (?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS)){
                 st.setLong(1, stay.getGuest().getId());
                 st.setLong(2, stay.getRoom().getId());
-                st.setDate(3, (Date) stay.getStartOfStay());
-                st.setDate(4, (Date) stay.getEndOfStay());
+                //st.setDate(3, (Date) stay.getStartOfStay());
+                //st.setDate(4, (Date) stay.getEndOfStay());
+                st.setTimestamp(3, dateToTimestamp(stay.getStartOfStay()));
+                st.setTimestamp(4, dateToTimestamp(stay.getEndOfStay()));
                 st.setBigDecimal(5, stay.getPrice());
                 
                 int count = st.executeUpdate();
@@ -88,6 +92,16 @@ public class StayManagerImpl implements StayManager{
         } catch (SQLException ex) {
             logger.log(Level.SEVERE,"Error when creating stay",ex);
             throw new ServiceFailureException("Error when creating stay", ex);
+        }
+    }
+    
+    private Timestamp dateToTimestamp(java.util.Date date) {
+        if (date == null) {
+            return null;
+        } else if (date instanceof Timestamp) {
+            return (Timestamp) date;
+        } else {
+            return new Timestamp(date.getTime());
         }
     }
     
@@ -143,8 +157,10 @@ public class StayManagerImpl implements StayManager{
             try(PreparedStatement st = conn.prepareStatement("UPDATE stay SET guest_id=?,room_id=?,start_of_stay=?, end_of_stay=?, total_price=? WHERE id=?")) {
                 st.setLong(1, stay.getGuest().getId());
                 st.setLong(2, stay.getRoom().getId());
-                st.setDate(3, (Date) stay.getStartOfStay());
-                st.setDate(4, (Date) stay.getEndOfStay());
+                //st.setDate(3, (Date) stay.getStartOfStay());
+                //st.setDate(4, (Date) stay.getEndOfStay());
+                st.setTimestamp(3, dateToTimestamp(stay.getStartOfStay()));
+                st.setTimestamp(4, dateToTimestamp(stay.getEndOfStay()));
                 st.setBigDecimal(5, stay.getPrice());
                 st.setLong(6,stay.getId());
              
@@ -206,8 +222,10 @@ public class StayManagerImpl implements StayManager{
         stay.setId(rs.getLong("id"));
         stay.setGuest(getGuest(rs));
         stay.setRoom(getRoom(rs));
-        stay.setStartOfStay(rs.getDate("start_of_stay"));
-        stay.setEndOfStay(rs.getDate("end_of_stay"));
+        //stay.setStartOfStay(rs.getDate("start_of_stay"));
+        stay.setStartOfStay(rs.getTimestamp("start_of_stay"));
+        //stay.setEndOfStay(rs.getDate("end_of_stay"));
+        stay.setEndOfStay(rs.getTimestamp("end_of_stay"));
         stay.setPrice(rs.getBigDecimal("total_price"));
         return stay;
     }
