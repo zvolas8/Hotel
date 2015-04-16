@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+import project.RoomManagerImpl;
+import project.Room;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -43,7 +45,8 @@ public class RoomManagerImplTest {
                     + "note VARCHAR(255),"
                     + "price INT)").executeUpdate();
         }
-        manager = new RoomManagerImpl(bds);
+        manager = new RoomManagerImpl();
+        manager.setDataSource(dataSource);
     }
     
    @After

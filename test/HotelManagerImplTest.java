@@ -4,6 +4,14 @@
  * and open the template in the editor.
  */
 
+import project.RoomManagerImpl;
+import project.StayManagerImpl;
+import project.Guest;
+import project.Stay;
+import project.HotelManager;
+import project.Room;
+import project.HotelManagerImpl;
+import project.GuestManagerImpl;
 import common.DBUtils;
 import java.math.BigDecimal;
 
@@ -48,10 +56,15 @@ public class HotelManagerImplTest {
         dataSource = prepareDataSource();        
         DBUtils.executeSqlScript(dataSource,HotelManager.class.getResource("createTables.sql"));
         
-        manager = new HotelManagerImpl(dataSource);
-        stayManager = new StayManagerImpl(dataSource);
-        guestManager = new GuestManagerImpl(dataSource);
-        roomManager = new RoomManagerImpl(dataSource);
+        manager = new HotelManagerImpl();
+        stayManager = new StayManagerImpl();
+        guestManager = new GuestManagerImpl();
+        roomManager = new RoomManagerImpl();
+        manager.setDataSource(dataSource);
+        stayManager.setDataSource(dataSource);
+        guestManager.setDataSource(dataSource);
+        roomManager.setDataSource(dataSource);
+
     }
     
    @After

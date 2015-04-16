@@ -1,3 +1,5 @@
+import project.Guest;
+import project.GuestManagerImpl;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,7 +37,8 @@ public class GuestManagerImplTest {
                     + "address VARCHAR(255),"
                     + "phonenumber VARCHAR(15))").executeUpdate();
         }
-        manager = new GuestManagerImpl(bds);
+        manager = new GuestManagerImpl();
+        manager.setDataSource(dataSource);
     }
     
    @After

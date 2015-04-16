@@ -1,3 +1,5 @@
+package project;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,9 +27,12 @@ public class GuestManagerImpl implements GuestManager{
 
     private static final Logger logger = Logger.getLogger(GuestManagerImpl.class.getName());
     
-    private final DataSource dataSource;
+    private DataSource dataSource;
 
-    public GuestManagerImpl(DataSource dataSource) {
+    public GuestManagerImpl() {
+    }
+    
+    public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
     

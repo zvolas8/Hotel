@@ -1,3 +1,5 @@
+package project;
+
 
 import common.DBUtils;
 import java.math.BigDecimal;
@@ -23,7 +25,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
  * @author marek
  */
 public class main {
-    StayManagerImpl manager;
+  /*  StayManagerImpl manager;
     RoomManagerImpl roomManager;
     GuestManagerImpl guestManager;  
     DataSource dataSource;
@@ -137,5 +139,5 @@ public class main {
         guest.setAddress(address);
         guest.setPhoneNumber(phoneNumber);
         return guest;
-    }
+    }*/
 }

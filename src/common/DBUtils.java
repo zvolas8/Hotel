@@ -52,4 +52,19 @@ public class DBUtils {
             throw new RuntimeException("Cannot read " + url, ex);
         }
     }
+    
+    public static void tryCreateTables(DataSource ds, URL scriptUrl) throws SQLException {
+        try {
+            executeSqlScript(ds, scriptUrl);
+            logger.warning("Tables created");
+        } catch (SQLException ex) {
+            if ("X0Y32".equals(ex.getSQLState())) {
+                // This code represents "Table/View/... already exists"
+                // This code is Derby specific!
+                return;
+            } else {
+                throw ex;
+            }
+        }
+    }
 }

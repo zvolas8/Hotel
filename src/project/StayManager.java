@@ -1,3 +1,5 @@
+package project;
+
 
 import java.util.Collection;
 import java.util.List;
@@ -12,16 +14,14 @@ import java.util.List;
  *
  * @author marek
  */
-public interface GuestManager {
-    public void createGuest(Guest guest);
+public interface StayManager {
+    public void createStay(Stay stay);
     
-    public void deleteGuest(Long id);
+    public void deleteStay(Long id);
     
-    public void updateGuest(Guest guest);
+    public void updateStay(Stay stay);
     
-    public Guest getGuestById(Long id);
+    public Stay getStayByID(Long id);
     
-    public List<Guest> getGuestsBySurname(String surname);
-    
-    public List<Guest> findAllGuest();
+    public List<Stay> findAllStay();
 }
