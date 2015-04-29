@@ -40,6 +40,7 @@ public class RoomManagerImplTest {
         try (Connection conn = bds.getConnection()) {
             conn.prepareStatement("CREATE TABLE ROOM ("
                     + "id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
+                    + "number INT,"
                     + "floor INT,"
                     + "capacity INT NOT NULL,"
                     + "note VARCHAR(255),"
@@ -59,7 +60,7 @@ public class RoomManagerImplTest {
     @Test
     public void createRoom(){
         BigDecimal price = new BigDecimal(2000);
-        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
+        Room room = newRoom(401, 4, 3, "Pokoj s bezbarierovým přístupem",price);
         manager.createRoom(room);
         
         Long roomID = room.getId();
@@ -75,7 +76,7 @@ public class RoomManagerImplTest {
         } catch(IllegalArgumentException ex){
             //ok
         }   
-        Room room = newRoom(5, 4, "se záporným id",price);
+        Room room = newRoom(501, 5, 4, "se záporným id",price);
         try{
            manager.createRoom(null);
            fail();
@@ -83,7 +84,7 @@ public class RoomManagerImplTest {
             //ok
         }
         
-        Room room1 = newRoom(-5, 4, "sklep",price);
+        Room room1 = newRoom(501, -5, 4, "sklep",price);
         try{
             manager.createRoom(room1);
             fail();
@@ -91,7 +92,7 @@ public class RoomManagerImplTest {
             //ok
         }
         
-        Room room2 = newRoom(5, -4, "se záporným počtem postelí",price);
+        Room room2 = newRoom(501, 5, -4, "se záporným počtem postelí",price);
         try{    
             manager.createRoom(room2);
             fail();
@@ -105,9 +106,9 @@ public class RoomManagerImplTest {
         Long id = new Long(2);
         BigDecimal price = new BigDecimal(2000);
         BigDecimal price2 = new BigDecimal(4000);
-        Room room1 = newRoom(4, 3, "rozbitá vana",price);
-        Room room2 = newRoom(4, 3, "postýlka pro děti",price);
-        Room room3 = newRoom(3, 5, "ok",price2);
+        Room room1 = newRoom(401, 4, 3, "rozbitá vana",price);
+        Room room2 = newRoom(402, 4, 3, "postýlka pro děti",price);
+        Room room3 = newRoom(301, 3, 5, "ok",price2);
         manager.createRoom(room1);
         manager.createRoom(room2);
         manager.createRoom(room3);
@@ -125,8 +126,8 @@ public class RoomManagerImplTest {
     public void updateRoom() {
         BigDecimal price = new BigDecimal(2000);
         BigDecimal price2 = new BigDecimal(5000);
-        Room room = newRoom(3, 6,"nic",price);
-        Room room2 = newRoom(2, 6,"neco",price);
+        Room room = newRoom(301, 3, 6,"nic",price);
+        Room room2 = newRoom(201, 2, 6,"neco",price);
         manager.createRoom(room);
         manager.createRoom(room2);
         Long roomId = room.getId();
@@ -159,7 +160,7 @@ public class RoomManagerImplTest {
     @Test
     public void updateRoomWithWrongAttributes() {
         BigDecimal price = new BigDecimal(2000);
-        Room room = newRoom(2, 4,"záchod",price);
+        Room room = newRoom(201, 2, 4,"záchod",price);
         manager.createRoom(room);
         Long roomId = room.getId();
 
@@ -211,7 +212,7 @@ public class RoomManagerImplTest {
     public void getRoomById(){
         Long id = new Long(1);
         BigDecimal price = new BigDecimal(2000);
-        Room room = newRoom(2, 4, "ok",price);
+        Room room = newRoom(201, 2, 4, "ok",price);
         manager.createRoom(room);
         List<Room> list = new ArrayList<>();
         list.add(room);
@@ -237,10 +238,10 @@ public class RoomManagerImplTest {
     public void findAllRoom(){
         BigDecimal price = new BigDecimal(2000);
         BigDecimal price2 = new BigDecimal(4500);
-        Room room1 = newRoom(4, 3, "rozbitá vana",price);
-        Room room2 = newRoom(4, 3, "postýlka pro děti",price2);
-        Room room3 = newRoom(3, 5, "ok",price2);
-        Room room4 = newRoom(2, 4, "ok",price);
+        Room room1 = newRoom(401, 4, 3, "rozbitá vana",price);
+        Room room2 = newRoom(402, 4, 3, "postýlka pro děti",price2);
+        Room room3 = newRoom(301, 3, 5, "ok",price2);
+        Room room4 = newRoom(201, 2, 4, "ok",price);
         manager.createRoom(room1);
         manager.createRoom(room2);
         manager.createRoom(room3);
@@ -254,8 +255,9 @@ public class RoomManagerImplTest {
         assertDeepEquals(list, manager.findAllRoom());
     }
     
-    private static Room newRoom(int floor, int capacity, String note, BigDecimal price){
+    private static Room newRoom(int number,int floor, int capacity, String note, BigDecimal price){
         Room room = new Room();
+        room.setNumber(number);
         room.setFloor(floor);
         room.setCapacity(capacity);
         room.setNote(note);
@@ -273,6 +275,7 @@ public class RoomManagerImplTest {
 
     private void assertDeepEquals(Room expected, Room actual) {
         assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getNumber(), actual.getNumber());
         assertEquals(expected.getFloor(), actual.getFloor());
         assertEquals(expected.getCapacity(), actual.getCapacity());
         assertEquals(expected.getNote(), actual.getNote());

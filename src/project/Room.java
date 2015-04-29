@@ -15,6 +15,7 @@ import java.math.BigDecimal;
  */
 public class Room {
     private Long id;
+    private int number;
     private int floor;
     private int capacity;
     private String note;
@@ -35,7 +36,22 @@ public class Room {
     public void setId(Long id) {
         this.id = id;
     }
+    
+    /**
+     * @return the number
+     */
+    public int getNumber() {
+        return number;
+    }
 
+    /**
+  
+}   * @param number the number to set
+     */
+    public void setNumber(int number) {
+        this.number = number;
+    }
+    
     /**
      * @return the floor
      */
@@ -98,7 +114,7 @@ public class Room {
      */
     @Override
     public String toString(){
-        return "pokoj: " + "(" + id + ") kapacita: " + capacity; 
+        return /*Integer.toString(number)*/ "" + floor + " " +capacity; 
     }
     
     /**

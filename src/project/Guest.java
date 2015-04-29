@@ -98,7 +98,7 @@ public class Guest {
      */
     @Override
     public String toString(){
-        return "id: " + id + "jméno a příjmení: " + name + " " + surname;   
+        return name + " " + surname;   
     }
     
     /**

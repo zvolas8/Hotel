@@ -83,7 +83,7 @@ public class StayManagerImplTest {
         BigDecimal price = new BigDecimal(2000);
         //Date start = new Date(2015, 3, 20);
         //Date end = new Date(2015, 3, 26);
-        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
+        Room room = newRoom(401, 4, 3, "Pokoj s bezbarierovým přístupem",price);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
         guestManager.createGuest(guest);
         roomManager.createRoom(room);
@@ -103,8 +103,8 @@ public class StayManagerImplTest {
         //Date start2 = new Date(2015, 3, 24);
         //Date end = new Date(2015, 3, 26);
         //Date end2 = new Date(2015, 3, 27);
-        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
-        Room room2 = newRoom(3, 2, "bez oken",price2);
+        Room room = newRoom(401, 4, 3, "Pokoj s bezbarierovým přístupem",price);
+        Room room2 = newRoom(301, 3, 2, "bez oken",price2);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
         Guest guest2 = newGuest("Sergio","Ramos","Santiago Bernabeu","456987159");
         roomManager.createRoom(room);
@@ -133,8 +133,8 @@ public class StayManagerImplTest {
         //Date start2 = new Date(2015, 3, 24);
         //Date end = new Date(2015, 3, 26);
         //Date end2 = new Date(2015, 3, 27);
-        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
-        Room room2 = newRoom(3, 2, "bez oken",price2);
+        Room room = newRoom(401, 4, 3, "Pokoj s bezbarierovým přístupem",price);
+        Room room2 = newRoom(301, 3, 2, "bez oken",price2);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
         Guest guest2 = newGuest("Sergio","Ramos","Santiago Bernabeu","456987159");
         roomManager.createRoom(room);
@@ -172,8 +172,8 @@ public class StayManagerImplTest {
         //Date start2 = new Date(2015, 3, 24);
         //Date end = new Date(2015, 3, 26);
         //Date end2 = new Date(2015, 3, 27);
-        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
-        Room room2 = newRoom(3, 2, "bez oken",price2);
+        Room room = newRoom(401, 4, 3, "Pokoj s bezbarierovým přístupem",price);
+        Room room2 = newRoom(301, 3, 2, "bez oken",price2);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
         Guest guest2 = newGuest("Sergio","Ramos","Santiago Bernabeu","456987159");
         roomManager.createRoom(room);
@@ -199,8 +199,8 @@ public class StayManagerImplTest {
         //Date start2 = new Date(2015, 3, 24);
         //Date end = new Date(2015, 3, 26);
         //Date end2 = new Date(2015, 3, 27);
-        Room room = newRoom(4, 3, "Pokoj s bezbarierovým přístupem",price);
-        Room room2 = newRoom(3, 2, "bez oken",price2);
+        Room room = newRoom(401, 4, 3, "Pokoj s bezbarierovým přístupem",price);
+        Room room2 = newRoom(301, 3, 2, "bez oken",price2);
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
         Guest guest2 = newGuest("Sergio","Ramos","Santiago Bernabeu","456987159");
         roomManager.createRoom(room);
@@ -225,9 +225,10 @@ public class StayManagerImplTest {
         return stay;
     }
     
-    private static Room newRoom(int floor, int capacity, String note, BigDecimal price){
+    private static Room newRoom(int number, int floor, int capacity, String note, BigDecimal price){
         Room room = new Room();
        // room.setId(id);
+        room.setNumber(number);
         room.setFloor(floor);
         room.setCapacity(capacity);
         room.setNote(note);
