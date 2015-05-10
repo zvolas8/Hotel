@@ -87,6 +87,7 @@ public class RoomManagerImpl implements RoomManager{
                 }
                 ResultSet keyRS = st.getGeneratedKeys();
                 room.setId(getKey(keyRS, room));
+                logger.log(Level.SEVERE,"creating room ok");
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error when creating new room.", ex);
@@ -125,6 +126,7 @@ public class RoomManagerImpl implements RoomManager{
                 if(st.executeUpdate()!=1) {
                     throw new ServiceFailureException("did not delete room with id ="+id);
                 }
+                logger.log(Level.SEVERE,"deleting room ok");
             }
         } catch (SQLException ex) {
            logger.log(Level.SEVERE, "Error when deleting room.", ex);
@@ -154,6 +156,7 @@ public class RoomManagerImpl implements RoomManager{
                 if(st.executeUpdate()!=1) {
                     throw new IllegalArgumentException("cannot update room "+room);
                 }
+                logger.log(Level.SEVERE,"updating room ok");
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error when updating room", ex);

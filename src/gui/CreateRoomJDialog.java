@@ -8,6 +8,7 @@ package gui;
 import java.math.BigDecimal;
 import project.Room;
 import project.RoomManager;
+import project.StayManager;
 
 /**
  *
@@ -16,10 +17,10 @@ import project.RoomManager;
 public class CreateRoomJDialog extends javax.swing.JDialog {
 
     private RoomManager roomManager;
-    
+    private StayManager stayManager;
     
     private JTableRoomModel roomsTableModel;
-   
+    private JTableStayModel stayTableModel;
     
     private Room room;
     
@@ -36,10 +37,12 @@ public class CreateRoomJDialog extends javax.swing.JDialog {
         initComponents();
     }
     
-    public CreateRoomJDialog(RoomManager roomManager, JTableRoomModel tableRoomModel, Room room){
+    public CreateRoomJDialog(RoomManager roomManager, JTableRoomModel tableRoomModel, Room room, JTableStayModel stayTableModel, StayManager stayManager){
         roomAlreadyExists = true;
         this.roomManager = roomManager;
+        this.stayManager = stayManager;
         this.roomsTableModel = tableRoomModel;
+        this.stayTableModel = stayTableModel;
         this.room = room;
         initComponents();
         jTextField5.setText(Integer.toString(room.getNumber()));
@@ -174,6 +177,7 @@ public class CreateRoomJDialog extends javax.swing.JDialog {
         room.setPricePerNight(new BigDecimal(jTextField4.getText()));
         if(roomAlreadyExists){
             roomManager.updateRoom(room);
+            stayTableModel.refresh(stayManager.findAllStay());
         }else{ 
             roomManager.createRoom(room);
         }

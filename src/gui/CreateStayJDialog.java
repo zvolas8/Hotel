@@ -27,7 +27,6 @@ public class CreateStayJDialog extends javax.swing.JDialog {
     private JTableStayModel stayTableModel;
     private JTableRoomModel roomTableModel;
     private JTableGuestModel guestTableModel;
-    private JTableChooseGuestModel chooseGuestTbaleModel;
     
     private GuestManager guestManager;
     private RoomManager roomManager;
@@ -41,8 +40,7 @@ public class CreateStayJDialog extends javax.swing.JDialog {
      * Creates new form CreateStayJDialog
      */
     public CreateStayJDialog(StayManager stayManager, GuestManager guestManager, RoomManager roomManager, 
-            JTableStayModel stayTableModel, JTableRoomModel roomTableModel, JTableGuestModel guestTableModel,
-            JTableChooseGuestModel chooseGuestTbaleModel) {
+            JTableStayModel stayTableModel, JTableRoomModel roomTableModel, JTableGuestModel guestTableModel) {
         stayAlreadyExists = false;
         this.stayManager = stayManager;
         this.roomManager = roomManager;
@@ -50,14 +48,14 @@ public class CreateStayJDialog extends javax.swing.JDialog {
         this.stayTableModel = stayTableModel;
         this.guestTableModel = guestTableModel;
         this.roomTableModel = roomTableModel;
-        this.chooseGuestTbaleModel = chooseGuestTbaleModel;
+    
         this.stay = new Stay();
         initComponents();
     }
     
      public CreateStayJDialog(StayManager stayManager, GuestManager guestManager, RoomManager roomManager, 
             JTableStayModel stayTableModel, JTableRoomModel roomTableModel, JTableGuestModel guestTableModel,
-            JTableChooseGuestModel chooseGuestTbaleModel, Stay stay){
+            Stay stay){
         stayAlreadyExists = true;
         this.stayManager = stayManager;
         this.roomManager = roomManager;
@@ -65,7 +63,6 @@ public class CreateStayJDialog extends javax.swing.JDialog {
         this.stayTableModel = stayTableModel;
         this.guestTableModel = guestTableModel;
         this.roomTableModel = roomTableModel;
-        this.chooseGuestTbaleModel = chooseGuestTbaleModel;
         this.stay = stay;
         initComponents();
         selectGuestJTable.setEditingRow(1);
@@ -126,7 +123,7 @@ public class CreateStayJDialog extends javax.swing.JDialog {
 
         jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("yyyy-MM-dd"))));
 
-        selectGuestJTable.setModel(chooseGuestTbaleModel);
+        selectGuestJTable.setModel(guestTableModel);
         jScrollPane3.setViewportView(selectGuestJTable);
 
         selectRoomJTable.setModel(roomTableModel);

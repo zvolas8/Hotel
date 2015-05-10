@@ -18,31 +18,23 @@ import project.Room;
  */
 public class viewRoomJDialog extends javax.swing.JDialog {
 
-    JTableRoomModel roomTableModel;
-    Guest guest;
-    Room room;
-    HotelManager hotelManager;
+    JTableChooseRoomModel roomTableModel;
     
     /**
      * Creates new form viewHostJDialog
      */
-    public viewRoomJDialog(HotelManager hotelManager, JTableRoomModel roomTableModel, Guest guest) {
+    public viewRoomJDialog(JTableChooseRoomModel roomTableModel, Room room) {
         this.roomTableModel = roomTableModel;
-        this.hotelManager = hotelManager;
-        this.guest = guest;
         initComponents();
         List<Room> list = new ArrayList<>();
-        Room r = new Room();
-        r =  hotelManager.findCurrentRoomWithGuest(guest);
-        if(r == null){
-            JOptionPane.showMessageDialog(null, "neni zadny aktualni pokoj");
-            roomTableModel.refresh(list);
-        }else{
-            list.add(r);
-            roomTableModel.refresh(list);        
-            this.setVisible(false);
-        }    
-       
+        list.add(room);
+        roomTableModel.refresh(list);
+    }
+    
+    public viewRoomJDialog(JTableChooseRoomModel roomTableModel, List<Room> room) {
+        this.roomTableModel = roomTableModel;
+        initComponents();
+        roomTableModel.refresh(room);
     }
 
     /**
@@ -66,17 +58,11 @@ public class viewRoomJDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
         );
 
         pack();

@@ -12,6 +12,8 @@ import java.awt.Toolkit;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.FileHandler;
@@ -31,72 +33,74 @@ import org.apache.commons.dbcp2.BasicDataSource;
 public class MainFrame extends javax.swing.JFrame {
 
     private BasicDataSource dataSource;
-    
+
     private GuestManagerImpl guestManager;
     private RoomManagerImpl roomManager;
     private StayManagerImpl stayManager;
     private HotelManagerImpl hotelManager;
-    
+
     private JTableGuestModel guestsTableModel;
     private JTableRoomModel roomsTableModel;
     private JTableStayModel stayTableModel;
-    private JTableChooseGuestModel  chooseGuestTableModel; 
-    
+    private JTableChooseGuestModel chooseGuestTableModel;
+    private JTableChooseRoomModel chooseRoomTableModel;
+
     private ResourceBundle localization = ResourceBundle.getBundle("gui.resourcebundles.GUITexts");
-    
+
     private Properties configuration;
-    
+
     private static final Logger LOGGER = Logger.getLogger(MainFrame.class.getCanonicalName());
+
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
-        
-        
+
         loadConfiguration();
-        configureLogging();   
-        
+        configureLogging();
+
         try {
             prepareDataSource();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Unable to initialize DataSource", ex);
         }
-        
+
         guestManager = new GuestManagerImpl();
         guestManager.setDataSource(dataSource);
-        
+
         roomManager = new RoomManagerImpl();
         roomManager.setDataSource(dataSource);
-        
+
         stayManager = new StayManagerImpl();
         stayManager.setDataSource(dataSource);
-        
+
         hotelManager = new HotelManagerImpl();
         hotelManager.setDataSource(dataSource);
-        
-        guestsTableModel = new JTableGuestModel(guestManager.findAllGuest(), localization); 
+
+        guestsTableModel = new JTableGuestModel(guestManager.findAllGuest(), localization);
         roomsTableModel = new JTableRoomModel(roomManager.findAllRoom(), localization);
         stayTableModel = new JTableStayModel(stayManager.findAllStay(), localization);
         chooseGuestTableModel = new JTableChooseGuestModel(guestManager.findAllGuest(), localization);
-        
-        initComponents();        
-        
+        chooseRoomTableModel = new JTableChooseRoomModel(roomManager.findAllRoom(), localization);
+
+        initComponents();
+
         centerFrame();
     }
 
-    private void loadConfiguration(){
-        configuration = new Properties();        
+    private void loadConfiguration() {
+        configuration = new Properties();
         //TODO check correct load
         try {
-            FileInputStream in = new FileInputStream("config.properties");   
-            configuration.load(in);            
+            FileInputStream in = new FileInputStream("config.properties");
+            configuration.load(in);
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, "Unable to read configuration file.", ex);
-        }       
-        
+        }
+
     }
-    
-    private void configureLogging(){
+
+    private void configureLogging() {
         Handler fileHandler = null;
         try {
             fileHandler = new FileHandler(configuration.getProperty("logFile"));
@@ -106,27 +110,28 @@ public class MainFrame extends javax.swing.JFrame {
         } catch (SecurityException ex) {
             LOGGER.log(Level.SEVERE, "Unable to initialize FileHandler.", ex);
         }
-        
-        Logger.getLogger("").addHandler(fileHandler);       
+
+        Logger.getLogger("").addHandler(fileHandler);
     }
-    
+
     private void prepareDataSource() throws SQLException {
-        dataSource = new BasicDataSource(); 
+        dataSource = new BasicDataSource();
         dataSource.setDriverClassName("org.apache.derby.jdbc.ClientDriver");
-        
-        String url = "jdbc:" + configuration.getProperty("dbDriver") + "://" + configuration.getProperty("dbHost") + 
-                     ":" + configuration.getProperty("dbPort") + "/" + configuration.getProperty("dbDatabaseName");
+
+        String url = "jdbc:" + configuration.getProperty("dbDriver") + "://" + configuration.getProperty("dbHost")
+                + ":" + configuration.getProperty("dbPort") + "/" + configuration.getProperty("dbDatabaseName");
         dataSource.setUrl(url);
-        
-        DBUtils.tryCreateTables(dataSource,GuestManager.class.getResource("createTables.sql"));       
+
+        DBUtils.tryCreateTables(dataSource, GuestManager.class.getResource("createTables.sql"));
     }
 
     private void centerFrame() {
         Toolkit toolkit = this.getToolkit();
         Dimension screenSize = toolkit.getScreenSize();
-        
+
         setLocation((screenSize.width / 2) - (this.getWidth() / 2), (screenSize.height / 2) - (this.getHeight() / 2));
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -148,14 +153,16 @@ public class MainFrame extends javax.swing.JFrame {
         roomJPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         roomJTable = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
         createRoomJB = new javax.swing.JButton();
         updateRoomJB = new javax.swing.JButton();
         deleteRoomJB = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        freeRoomJB = new javax.swing.JButton();
+        currentGuestJB = new javax.swing.JButton();
         stayJPanel = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         stayJTable = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
         createStayJB = new javax.swing.JButton();
         updateStayJB = new javax.swing.JButton();
         deleteStayJB = new javax.swing.JButton();
@@ -201,16 +208,16 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(updateGuetsJB)
-                    .addComponent(createGuestJB))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(deleteGuestJB, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(currentRoomForGuestJB, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(updateGuetsJB))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(27, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(deleteGuestJB, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(currentRoomForGuestJB, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(createGuestJB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
 
@@ -240,8 +247,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(guetsJPanelLayout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         guetsJPanelLayout.setVerticalGroup(
             guetsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,48 +281,71 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Free rooms");
+        freeRoomJB.setText(bundle.getString("mainFrame.room.freeRoom")); // NOI18N
+        freeRoomJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                freeRoomJBActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Current guest");
+        currentGuestJB.setText(bundle.getString("mainFrame.room.currentGuest")); // NOI18N
+        currentGuestJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                currentGuestJBActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(0, 27, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(freeRoomJB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(updateRoomJB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(currentGuestJB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(deleteRoomJB, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(createRoomJB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {createRoomJB, currentGuestJB, deleteRoomJB, freeRoomJB, updateRoomJB});
+
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(createRoomJB)
+                .addGap(4, 4, 4)
+                .addComponent(updateRoomJB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deleteRoomJB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(freeRoomJB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(currentGuestJB)
+                .addContainerGap(125, Short.MAX_VALUE))
+        );
+
+        createRoomJB.getAccessibleContext().setAccessibleName(bundle.getString("mainFrame.room.create")); // NOI18N
+        updateRoomJB.getAccessibleContext().setAccessibleName(bundle.getString("mainFrame.room.update")); // NOI18N
+        deleteRoomJB.getAccessibleContext().setAccessibleName(bundle.getString("mainFrame.room.delete")); // NOI18N
 
         javax.swing.GroupLayout roomJPanelLayout = new javax.swing.GroupLayout(roomJPanel);
         roomJPanel.setLayout(roomJPanelLayout);
         roomJPanelLayout.setHorizontalGroup(
             roomJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(roomJPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roomJPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(createRoomJB)
-                .addGap(18, 18, 18)
-                .addComponent(updateRoomJB)
-                .addGap(18, 18, 18)
-                .addComponent(deleteRoomJB)
-                .addGap(50, 50, 50))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         roomJPanelLayout.setVerticalGroup(
             roomJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(roomJPanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(roomJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(createRoomJB)
-                    .addComponent(updateRoomJB)
-                    .addComponent(deleteRoomJB)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(23, 23, 23))
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        createRoomJB.getAccessibleContext().setAccessibleName(bundle.getString("mainFrame.room.create")); // NOI18N
-        updateRoomJB.getAccessibleContext().setAccessibleName(bundle.getString("mainFrame.room.update")); // NOI18N
-        deleteRoomJB.getAccessibleContext().setAccessibleName(bundle.getString("mainFrame.room.delete")); // NOI18N
 
         guestJTabbedPane.addTab(bundle.getString("mainFrame.tabPanel.room"), roomJPanel); // NOI18N
 
@@ -344,35 +373,49 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(deleteStayJB)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(createStayJB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateStayJB, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {createStayJB, deleteStayJB, updateStayJB});
+
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(createStayJB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(updateStayJB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deleteStayJB)
+                .addContainerGap(181, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout stayJPanelLayout = new javax.swing.GroupLayout(stayJPanel);
         stayJPanel.setLayout(stayJPanelLayout);
         stayJPanelLayout.setHorizontalGroup(
             stayJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(stayJPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(stayJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(stayJPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane4)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, stayJPanelLayout.createSequentialGroup()
-                        .addGap(0, 294, Short.MAX_VALUE)
-                        .addComponent(createStayJB)
-                        .addGap(18, 18, 18)
-                        .addComponent(updateStayJB)
-                        .addGap(18, 18, 18)
-                        .addComponent(deleteStayJB)
-                        .addGap(62, 62, 62))))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         stayJPanelLayout.setVerticalGroup(
             stayJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(stayJPanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(stayJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(updateStayJB)
-                    .addComponent(createStayJB)
-                    .addComponent(deleteStayJB))
-                .addGap(0, 17, Short.MAX_VALUE))
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
 
         guestJTabbedPane.addTab(bundle.getString("mainFrame.tabPanel.stay"), stayJPanel); // NOI18N
@@ -388,7 +431,7 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(guestJTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(guestJTabbedPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -409,15 +452,16 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void updateGuetsJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateGuetsJBActionPerformed
         int row = guestJTable.getSelectedRow();
-        if(row<0){
+        if (row < 0) {
             JOptionPane.showMessageDialog(null, localization.getString("warnings.noRowSelected"));
-        }else{            
+        } else {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     int row = guestJTable.getSelectedRow();
                     Guest selectedGuest = guestsTableModel.getRow(row);
-                    new CreateGuestJDialog(guestManager, guestsTableModel, selectedGuest).setVisible(true);
+                    new CreateGuestJDialog(guestManager, guestsTableModel, selectedGuest,stayTableModel,stayManager).setVisible(true);
+                    stayTableModel.refresh(stayManager.findAllStay());
                 }
             });
         }
@@ -425,18 +469,18 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void deleteGuestJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteGuestJBActionPerformed
         int row = guestJTable.getSelectedRow();
-        if(row<0){
+        if (row < 0) {
             JOptionPane.showMessageDialog(null, localization.getString("warnings.noRowSelected"));
-        }else{
+        } else {
             Guest selectedGuest = guestsTableModel.getRow(row);
             guestManager.deleteGuest(selectedGuest.getId());
             guestsTableModel.refresh(guestManager.findAllGuest());
         }
-        
+
     }//GEN-LAST:event_deleteGuestJBActionPerformed
 
     private void createRoomJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createRoomJBActionPerformed
-            invokeLater(new Runnable() {
+        invokeLater(new Runnable() {
             @Override
             public void run() {
                 new CreateRoomJDialog(roomManager, roomsTableModel).setVisible(true);
@@ -446,15 +490,15 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void updateRoomJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateRoomJBActionPerformed
         int row = roomJTable.getSelectedRow();
-        if(row<0){
+        if (row < 0) {
             JOptionPane.showMessageDialog(null, localization.getString("warnings.noRowSelected"));
-        }else{            
+        } else {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     int row = roomJTable.getSelectedRow();
                     Room selectedRoom = roomsTableModel.getRow(row);
-                    new CreateRoomJDialog(roomManager, roomsTableModel, selectedRoom).setVisible(true);
+                    new CreateRoomJDialog(roomManager, roomsTableModel, selectedRoom,stayTableModel,stayManager).setVisible(true);
                 }
             });
         }
@@ -462,9 +506,9 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void deleteRoomJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRoomJBActionPerformed
         int row = roomJTable.getSelectedRow();
-        if(row<0){
+        if (row < 0) {
             JOptionPane.showMessageDialog(null, localization.getString("warnings.noRowSelected"));
-        }else{
+        } else {
             Room selectedRoom = roomsTableModel.getRow(row);
             roomManager.deleteRoom(selectedRoom.getId());
             roomsTableModel.refresh(roomManager.findAllRoom());
@@ -472,27 +516,27 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteRoomJBActionPerformed
 
     private void createStayJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createStayJBActionPerformed
-       invokeLater(new Runnable() {
+        invokeLater(new Runnable() {
             @Override
             public void run() {
-                new CreateStayJDialog(stayManager, guestManager, roomManager, 
-                        stayTableModel, roomsTableModel, guestsTableModel,chooseGuestTableModel).setVisible(true);
+                new CreateStayJDialog(stayManager, guestManager, roomManager,
+                        stayTableModel, roomsTableModel, guestsTableModel).setVisible(true);
             }
         });
     }//GEN-LAST:event_createStayJBActionPerformed
 
     private void updateStayJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateStayJBActionPerformed
-        int row =  stayJTable.getSelectedRow();
-        if(row<0){
+        int row = stayJTable.getSelectedRow();
+        if (row < 0) {
             JOptionPane.showMessageDialog(null, localization.getString("warnings.noRowSelected"));
-        }else{            
+        } else {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     int row = stayJTable.getSelectedRow();
                     Stay selectedStay = stayTableModel.getRow(row);
-                    new CreateStayJDialog(stayManager, guestManager, roomManager, 
-                        stayTableModel, roomsTableModel, guestsTableModel,chooseGuestTableModel,selectedStay).setVisible(true);
+                    new CreateStayJDialog(stayManager, guestManager, roomManager,
+                            stayTableModel, roomsTableModel, guestsTableModel, selectedStay).setVisible(true);
                 }
             });
         }
@@ -500,9 +544,9 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void deleteStayJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteStayJBActionPerformed
         int row = stayJTable.getSelectedRow();
-        if(row<0){
+        if (row < 0) {
             JOptionPane.showMessageDialog(null, localization.getString("warnings.noRowSelected"));
-        }else{
+        } else {
             Stay selectedStay = stayTableModel.getRow(row);
             stayManager.deleteStay(selectedStay.getId());
             stayTableModel.refresh(stayManager.findAllStay());
@@ -511,22 +555,60 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void currentRoomForGuestJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentRoomForGuestJBActionPerformed
         int row = guestJTable.getSelectedRow();
-        if(row<0){
+        if (row < 0) {
             JOptionPane.showMessageDialog(null, localization.getString("warnings.noRowSelected"));
-        }else{            
+        } else {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     int row = guestJTable.getSelectedRow();
                     Guest selectedGuest = guestsTableModel.getRow(row);
-                    new viewRoomJDialog(hotelManager, roomsTableModel, selectedGuest).setVisible(true);
+                    Room room = new Room();
+                    room = hotelManager.findCurrentRoomWithGuest(selectedGuest);
+                    if (room == null) {
+                        JOptionPane.showMessageDialog(null, localization.getString("warnings.anycurrentroom"));
+                    } else {
+                        new viewRoomJDialog(chooseRoomTableModel, room).setVisible(true);
+                    }
+
                 }
             });
         }
     }//GEN-LAST:event_currentRoomForGuestJBActionPerformed
 
- 
-    
+    private void freeRoomJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_freeRoomJBActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                List<Room> result = hotelManager.findAllEmptyRooms();
+                new viewRoomJDialog(chooseRoomTableModel, result).setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_freeRoomJBActionPerformed
+
+    private void currentGuestJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentGuestJBActionPerformed
+        int row = roomJTable.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(null, localization.getString("warnings.noRowSelected"));
+        } else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    int row = roomJTable.getSelectedRow();
+                    Room selectedRoom = roomsTableModel.getRow(row);
+                    Guest guest = new Guest();
+                    guest = hotelManager.findCurrentGuestWithRoom(selectedRoom);
+                    if (guest == null) {
+                        JOptionPane.showMessageDialog(null,localization.getString("warnings.anycurrentguest"));
+                    } else {
+                        new viewGuestJDialog(chooseGuestTableModel, guest).setVisible(true);
+                    }
+
+                }
+            });
+        }
+    }//GEN-LAST:event_currentGuestJBActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -566,18 +648,20 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton createGuestJB;
     private javax.swing.JButton createRoomJB;
     private javax.swing.JButton createStayJB;
+    private javax.swing.JButton currentGuestJB;
     private javax.swing.JButton currentRoomForGuestJB;
     private javax.swing.JButton deleteGuestJB;
     private javax.swing.JButton deleteRoomJB;
     private javax.swing.JButton deleteStayJB;
+    private javax.swing.JButton freeRoomJB;
     private javax.swing.JTabbedPane guestJTabbedPane;
     private javax.swing.JTable guestJTable;
     private javax.swing.JPanel guetsJPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;

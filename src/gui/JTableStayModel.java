@@ -73,7 +73,7 @@ public class JTableStayModel extends AbstractTableModel{
         
         switch(columnIndex){
             case COLUMN_GUEST_INDEX: return stay.getGuest();
-            case COLUMN_ROOM_INDEX: return stay.getRoom();
+            case COLUMN_ROOM_INDEX: return stay.getRoom();  
             case COLUMN_STARTOFSTAY_INDEX: return stay.getStartOfStay().toString().substring(0, 10);
             case COLUMN_ENDOFSTAY: return stay.getEndOfStay().toString().substring(0, 10);            
             case COLUMN_PRICE_INDEX: return stay.getPrice();            

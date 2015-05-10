@@ -70,9 +70,9 @@ public class JTableChooseGuestModel extends AbstractTableModel{
         
         switch(columnIndex){
             case COLUMN_NAME_INDEX: return guest.getName();
-            case COLUMN_SURNAME_INDEX: return guest.getSurname();      
+            case COLUMN_SURNAME_INDEX: return guest.getSurname();
             case COLUMN_ADDRESS_INDEX: return guest.getAddress();            
-            case COLUMN_PHONENUMBER_INDEX: return guest.getPhoneNumber();    
+            case COLUMN_PHONENUMBER_INDEX: return guest.getPhoneNumber();            
         }
         
         throw new IllegalArgumentException("column index out of bounds.");

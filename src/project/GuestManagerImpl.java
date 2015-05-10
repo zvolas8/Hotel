@@ -88,6 +88,7 @@ public class GuestManagerImpl implements GuestManager{
                 }
                 ResultSet keyRS = st.getGeneratedKeys();
                 guest.setId(getKey(keyRS, guest));
+                logger.log(Level.SEVERE,"creating guest ok");
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE,"Error when creating new room.",ex);
@@ -127,6 +128,7 @@ public class GuestManagerImpl implements GuestManager{
                 if(count != 1){
                     throw new ServiceFailureException("did not delete guest with id ="+id);
                 }
+                logger.log(Level.SEVERE,"deleting guest ok");
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE,"Error when delete guest", ex);
@@ -155,6 +157,7 @@ public class GuestManagerImpl implements GuestManager{
                 if(st.executeUpdate()!=1) {
                     throw new IllegalArgumentException("cannot update guest "+guest);
                 }
+                logger.log(Level.SEVERE,"updating guest ok");
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error when updating guest", ex);

@@ -114,7 +114,7 @@ public class Room {
      */
     @Override
     public String toString(){
-        return /*Integer.toString(number)*/ "" + floor + " " +capacity; 
+        return Integer.toString(number); 
     }
     
     /**

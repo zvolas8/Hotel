@@ -96,6 +96,7 @@ public class StayManagerImpl implements StayManager{
                 }
                 ResultSet keyRS = st.getGeneratedKeys();
                 stay.setId(getKey(keyRS, stay));
+                logger.log(Level.SEVERE,"creating stay ok");
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE,"Error when creating stay",ex);
@@ -160,6 +161,7 @@ public class StayManagerImpl implements StayManager{
                 if(st.executeUpdate()!=1) {
                     throw new ServiceFailureException("did not delete stay with id ="+id);
                 }
+                logger.log(Level.SEVERE,"deleting stay ok");
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE,"Error when delete stay",ex);
@@ -190,6 +192,7 @@ public class StayManagerImpl implements StayManager{
                 if(st.executeUpdate()!=1) {
                     throw new IllegalArgumentException("cannot update stay "+stay);
                 }
+                logger.log(Level.SEVERE,"updating stay ok");
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error when updating stay", ex);
@@ -264,6 +267,7 @@ public class StayManagerImpl implements StayManager{
     private Room getRoom(ResultSet rs) throws SQLException{
         Room room = new Room();
         room.setId(rs.getLong("id"));
+        room.setNumber(rs.getInt("number"));
         room.setFloor(rs.getInt("floor"));
         room.setCapacity(rs.getInt("capacity"));
         room.setNote(rs.getString("note"));

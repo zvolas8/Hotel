@@ -157,8 +157,8 @@ public class HotelManagerImplTest {
         guestManager.createGuest(guest2);
         Stay stay = newStay(guest, room, date("2015-03-11"), date("2015-04-05"), price);
         Stay stay2 = newStay(guest2, room2, date("2014-09-13"), date("2014-10-08"), price2);
-        Stay stay3 = newStay(guest, room2, date("2015-01-11"), date("2014-01-16"), price2);
-        Stay stay4 = newStay(guest, room2, date("2015-02-11"), date("2014-02-16"), price2);
+        Stay stay3 = newStay(guest, room2, date("2015-01-11"), date("2015-01-16"), price2);
+        Stay stay4 = newStay(guest, room2, date("2015-02-11"), date("2015-07-16"), price2);
         Stay stay5 = newStay(guest, room3, date("2014-08-11"), date("2014-08-16"), price2);
         Stay stay6 = newStay(guest, room5, date("2015-03-20"), date("2015-03-30"), price2);
         Stay stay7 = newStay(guest, room6, date("2015-03-28"), date("2015-08-05"), price2);
@@ -173,7 +173,7 @@ public class HotelManagerImplTest {
         stayManager.createStay(stay8);
                     
         List<Room> result = manager.findAllEmptyRooms();
-        assertEquals(6, result.size());
+        assertEquals(5, result.size());
     }
     
     @Test

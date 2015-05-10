@@ -7,6 +7,7 @@ package gui;
 
 import project.Guest;
 import project.GuestManager;
+import project.StayManager;
 
 /**
  *
@@ -15,18 +16,16 @@ import project.GuestManager;
 public class CreateGuestJDialog extends javax.swing.JDialog {
 
     private GuestManager guestManager;
-    
+    private StayManager stayManager;
     
     private JTableGuestModel guestsTableModel;
+    private JTableStayModel stayTableModel;
    
     
     private Guest guest;
     
     private boolean guestAlreadyExists;
     
-    /**
-     * Creates new form CreateGuestJDialog
-     */
     public CreateGuestJDialog(GuestManager guestManager, JTableGuestModel guestsTableModel) {
         guestAlreadyExists = false;
         this.guestManager = guestManager;
@@ -35,10 +34,12 @@ public class CreateGuestJDialog extends javax.swing.JDialog {
         initComponents();
     }
     
-    public CreateGuestJDialog(GuestManager guestManager, JTableGuestModel guestsTableModel, Guest guest){
+    public CreateGuestJDialog(GuestManager guestManager, JTableGuestModel guestsTableModel, Guest guest, JTableStayModel stayTableModel, StayManager stayManager){
         guestAlreadyExists = true;
         this.guestManager = guestManager;
+        this.stayManager = stayManager;
         this.guestsTableModel = guestsTableModel;
+        this.stayTableModel = stayTableModel;
         this.guest = guest;
         initComponents();
         jTextField1.setText(guest.getName());
@@ -170,11 +171,12 @@ public class CreateGuestJDialog extends javax.swing.JDialog {
         guest.setPhoneNumber(jTextField4.getText());
         if(guestAlreadyExists){
             guestManager.updateGuest(guest);
+            stayTableModel.refresh(stayManager.findAllStay());
         }else{ 
             guestManager.createGuest(guest);
         }
         guestsTableModel.refresh(guestManager.findAllGuest());
-       
+        
         
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed

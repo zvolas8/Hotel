@@ -189,6 +189,7 @@ public class HotelManagerImpl implements HotelManager{
     private Room getRoom(ResultSet rs) throws SQLException{
         Room room = new Room();
         room.setId(rs.getLong("id"));
+        room.setNumber(rs.getInt("number"));
         room.setFloor(rs.getInt("floor"));
         room.setCapacity(rs.getInt("capacity"));
         room.setNote(rs.getString("note"));
