@@ -124,7 +124,7 @@ public class Room {
      */
     @Override
     public boolean equals(Object obj){
-        if(obj == null || !(obj instanceof Guest)){
+        if(obj == null || !(obj instanceof Room)){
             return false;
         }
         Room r = (Room) obj;

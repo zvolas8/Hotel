@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.table.AbstractTableModel;
+import project.GuestManagerImpl;
 
 /**
  *
@@ -82,6 +83,26 @@ public class JTableGuestModel extends AbstractTableModel{
         return table.get(rowIndex);
     }
     
+    public int getRowById(Long id){
+        Guest guest = getGuestById(id);
+        for(int i = 0; i<table.size();i++){
+            
+            if(guest.equals(getRow(i))){
+                return i;
+            }
+        }
+        return 0;
+    }
+    
+    private Guest getGuestById(Long id){
+        for(Guest g : table){
+            if(id.equals(g.getId())){
+                return g;
+            }
+        }
+        return null;
+    }
+        
     public void refresh(Collection<Guest> data){
         table.clear();
         table.addAll(data);

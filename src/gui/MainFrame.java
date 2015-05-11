@@ -12,7 +12,6 @@ import java.awt.Toolkit;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -535,8 +534,10 @@ public class MainFrame extends javax.swing.JFrame {
                 public void run() {
                     int row = stayJTable.getSelectedRow();
                     Stay selectedStay = stayTableModel.getRow(row);
+                    int guestRow = guestsTableModel.getRowById(selectedStay.getGuest().getId());
+                    int roomRow = roomsTableModel.getRowById(selectedStay.getRoom().getId());
                     new CreateStayJDialog(stayManager, guestManager, roomManager,
-                            stayTableModel, roomsTableModel, guestsTableModel, selectedStay).setVisible(true);
+                            stayTableModel, roomsTableModel, guestsTableModel, selectedStay, guestRow, roomRow).setVisible(true);
                 }
             });
         }
@@ -563,7 +564,7 @@ public class MainFrame extends javax.swing.JFrame {
                 public void run() {
                     int row = guestJTable.getSelectedRow();
                     Guest selectedGuest = guestsTableModel.getRow(row);
-                    Room room = new Room();
+                    Room room;// = new Room();
                     room = hotelManager.findCurrentRoomWithGuest(selectedGuest);
                     if (room == null) {
                         JOptionPane.showMessageDialog(null, localization.getString("warnings.anycurrentroom"));
@@ -596,7 +597,7 @@ public class MainFrame extends javax.swing.JFrame {
                 public void run() {
                     int row = roomJTable.getSelectedRow();
                     Room selectedRoom = roomsTableModel.getRow(row);
-                    Guest guest = new Guest();
+                    Guest guest;// = new Guest();
                     guest = hotelManager.findCurrentGuestWithRoom(selectedRoom);
                     if (guest == null) {
                         JOptionPane.showMessageDialog(null,localization.getString("warnings.anycurrentguest"));
@@ -625,19 +626,16 @@ public class MainFrame extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new MainFrame().setVisible(true);
             }

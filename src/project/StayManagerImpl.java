@@ -1,6 +1,7 @@
 package project;
 
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 //import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -67,9 +68,9 @@ public class StayManagerImpl implements StayManager{
             throw new IllegalArgumentException("");
         }
         
-        if(stay.getPrice()== null){
+        /*if(stay.getPrice()== null){
             throw new IllegalArgumentException("");
-        }
+        }*/
         return true;
     }
     @Override
@@ -77,10 +78,10 @@ public class StayManagerImpl implements StayManager{
         checkStay(stay);
         checkDataSource();
         
-        if(findAllEmptyRooms().contains(stay.getRoom())){
+        /*if(findAllEmptyRooms().contains(stay.getRoom())){
             throw new IllegalArgumentException("room is not empty");
             //logger.log(Level.SEVERE, "Error when creating stay(room is not empty)");
-        }
+        }*/
         
         try(Connection conn = dataSource.getConnection()){
             try(PreparedStatement st = conn.prepareStatement("INSERT INTO stay (guest_id, room_id, start_of_stay, end_of_stay, total_price) VALUES (?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS)){
@@ -88,7 +89,9 @@ public class StayManagerImpl implements StayManager{
                 st.setLong(2, stay.getRoom().getId());
                 st.setTimestamp(3, dateToTimestamp(stay.getStartOfStay()));
                 st.setTimestamp(4, dateToTimestamp(stay.getEndOfStay()));
-                st.setBigDecimal(5, stay.getPrice());
+                int result = differenDates(stay.getStartOfStay(), stay.getEndOfStay());
+                BigDecimal price =  stay.getRoom().getPricePerNight().multiply(new BigDecimal(result));
+                st.setBigDecimal(5, price);
                 
                 int count = st.executeUpdate();
                 if (count != 1) {
@@ -102,6 +105,14 @@ public class StayManagerImpl implements StayManager{
             logger.log(Level.SEVERE,"Error when creating stay",ex);
             throw new ServiceFailureException("Error when creating stay", ex);
         }
+    }
+    
+    private int differenDates(Date dateStart, Date dateEnd){
+        double timeStart = dateStart.getTime();
+        double timeEnd = dateEnd.getTime();
+        double result = timeEnd-timeStart;
+        result /= (1000*60*60*24);
+        return (int) result;
     }
     
     private List<Room> findAllEmptyRooms() {
@@ -256,7 +267,7 @@ public class StayManagerImpl implements StayManager{
     
     private Guest getGuest(ResultSet rs) throws SQLException{
         Guest guest = new Guest();
-        guest.setId(rs.getLong("id"));
+        guest.setId(rs.getLong("guest_id"));
         guest.setName(rs.getString("name"));
         guest.setSurname(rs.getString("surname"));
         guest.setAddress(rs.getString("address"));
@@ -266,7 +277,7 @@ public class StayManagerImpl implements StayManager{
     
     private Room getRoom(ResultSet rs) throws SQLException{
         Room room = new Room();
-        room.setId(rs.getLong("id"));
+        room.setId(rs.getLong("room_id"));
         room.setNumber(rs.getInt("number"));
         room.setFloor(rs.getInt("floor"));
         room.setCapacity(rs.getInt("capacity"));

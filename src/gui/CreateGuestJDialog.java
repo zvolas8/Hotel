@@ -5,6 +5,8 @@
  */
 package gui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import project.Guest;
 import project.GuestManager;
 import project.StayManager;
@@ -32,6 +34,7 @@ public class CreateGuestJDialog extends javax.swing.JDialog {
         this.guestsTableModel = guestsTableModel;
         guest = new Guest();
         initComponents();
+        centerFrame();
     }
     
     public CreateGuestJDialog(GuestManager guestManager, JTableGuestModel guestsTableModel, Guest guest, JTableStayModel stayTableModel, StayManager stayManager){
@@ -46,6 +49,14 @@ public class CreateGuestJDialog extends javax.swing.JDialog {
         jTextField2.setText(guest.getSurname());
         jTextField3.setText(guest.getAddress());
         jTextField4.setText(guest.getPhoneNumber());
+        centerFrame();
+    }
+    
+    private void centerFrame() {
+        Toolkit toolkit = this.getToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+
+        setLocation((screenSize.width / 2) - (this.getWidth() / 2), (screenSize.height / 2) - (this.getHeight() / 2));
     }
     
     

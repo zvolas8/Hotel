@@ -84,6 +84,26 @@ public class JTableRoomModel extends AbstractTableModel {
         return table.get(rowIndex);
     }
     
+    public int getRowById(Long id){
+        Room room = getRoomById(id);
+        for(int i = 0; i<table.size();i++){
+            
+            if(room.equals(getRow(i))){
+                return i;
+            }
+        }
+        return 0;
+    }
+    
+    private Room getRoomById(Long id){
+        for(Room g : table){
+            if(id.equals(g.getId())){
+                return g;
+            }
+        }
+        return null;
+    }
+    
     public void refresh(Collection<Room> data){
         table.clear();
         table.addAll(data);

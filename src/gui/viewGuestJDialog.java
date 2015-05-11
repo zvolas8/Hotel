@@ -5,6 +5,8 @@
  */
 package gui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -30,6 +32,14 @@ public class viewGuestJDialog extends javax.swing.JDialog {
         List<Guest> list = new ArrayList<>();
         list.add(guest);
         guestTableModel.refresh(list);
+        centerFrame();
+    }
+    
+    private void centerFrame() {
+        Toolkit toolkit = this.getToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+
+        setLocation((screenSize.width / 2) - (this.getWidth() / 2), (screenSize.height / 2) - (this.getHeight() / 2));
     }
 
     /**

@@ -5,6 +5,8 @@
  */
 package gui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.math.BigDecimal;
 import project.Room;
 import project.RoomManager;
@@ -35,6 +37,7 @@ public class CreateRoomJDialog extends javax.swing.JDialog {
         this.roomsTableModel = roomsTableModel;
         room = new Room();
         initComponents();
+        centerFrame();
     }
     
     public CreateRoomJDialog(RoomManager roomManager, JTableRoomModel tableRoomModel, Room room, JTableStayModel stayTableModel, StayManager stayManager){
@@ -50,8 +53,16 @@ public class CreateRoomJDialog extends javax.swing.JDialog {
         jTextField2.setText(Integer.toString(room.getCapacity()));
         jTextField3.setText(room.getNote());
         jTextField4.setText(room.getPricePerNight().toString());
+        centerFrame();
     }
 
+    private void centerFrame() {
+        Toolkit toolkit = this.getToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+
+        setLocation((screenSize.width / 2) - (this.getWidth() / 2), (screenSize.height / 2) - (this.getHeight() / 2));
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

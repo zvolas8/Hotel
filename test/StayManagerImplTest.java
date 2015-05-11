@@ -87,7 +87,7 @@ public class StayManagerImplTest {
         Guest guest = newGuest("Karim","Benzema","Santiago Bernabeu","111222333");
         guestManager.createGuest(guest);
         roomManager.createRoom(room);
-        Stay stay = newStay(guest, room, date("2014-08-11"), date("2014-08-11"), price);
+        Stay stay = newStay(guest, room, date("2014-08-11"), date("2014-08-11"));
         
         manager.createStay(stay);
         
@@ -111,8 +111,8 @@ public class StayManagerImplTest {
         roomManager.createRoom(room2);
         guestManager.createGuest(guest);
         guestManager.createGuest(guest2);
-        Stay stay = newStay(guest, room, date("2014-08-12"), date("2015-08-12"), price);
-        Stay stay2 = newStay(guest2, room2, date("2014-08-12"), date("2014-09-12"), price2);
+        Stay stay = newStay(guest, room, date("2014-08-12"), date("2015-08-12"));
+        Stay stay2 = newStay(guest2, room2, date("2014-08-12"), date("2014-09-12"));
         manager.createStay(stay);
         manager.createStay(stay2);
         manager.deleteStay(Long.valueOf(2));
@@ -141,7 +141,7 @@ public class StayManagerImplTest {
         roomManager.createRoom(room2);
         guestManager.createGuest(guest);
         guestManager.createGuest(guest2);
-        Stay stay = newStay(guest, room, date("2015-02-21"), date("2015-03-24"), price);
+        Stay stay = newStay(guest, room, date("2015-02-21"), date("2015-03-24"));
         manager.createStay(stay);
         
         stay = manager.getStayByID(Long.valueOf(1));
@@ -180,14 +180,13 @@ public class StayManagerImplTest {
         roomManager.createRoom(room2);
         guestManager.createGuest(guest);
         guestManager.createGuest(guest2);
-        Stay stay = newStay(guest, room, date("2015-01-17"), date("2015-01-25"), price);
-        Stay stay2 = newStay(guest2, room2, date("2015-01-14"), date("2015-01-26"), price2);
+        Stay stay = newStay(guest, room, date("2015-01-17"), date("2015-01-25"));
+        Stay stay2 = newStay(guest2, room2, date("2015-01-14"), date("2015-01-26"));
         manager.createStay(stay);
         manager.createStay(stay2);
         
         Stay result = manager.getStayByID(Long.valueOf(2));
         assertEquals(stay2.getId(), result.getId());
-        assertEquals(stay2.getPrice(), result.getPrice());
         assertEquals(stay2.getEndOfStay(), result.getEndOfStay());
     }
     
@@ -207,21 +206,21 @@ public class StayManagerImplTest {
         roomManager.createRoom(room2);
         guestManager.createGuest(guest);
         guestManager.createGuest(guest2);
-        Stay stay = newStay(guest, room, date("2015-01-17"), date("2015-01-25"), price);
-        Stay stay2 = newStay(guest2, room2, date("2015-01-14"), date("2015-01-26"), price2);
+        Stay stay = newStay(guest, room, date("2015-01-17"), date("2015-01-25"));
+        Stay stay2 = newStay(guest2, room2, date("2015-01-14"), date("2015-01-26"));
         manager.createStay(stay);
         manager.createStay(stay2);
         List<Stay> result = manager.findAllStay();
         assertEquals(2, result.size());
     }
     
-    private static Stay newStay(Guest guest, Room room, Date startOfStay, Date endOfStay, BigDecimal price){
+    private static Stay newStay(Guest guest, Room room, Date startOfStay, Date endOfStay){
         Stay stay = new Stay();
         stay.setGuest(guest);
         stay.setRoom(room);
         stay.setStartOfStay(startOfStay);
         stay.setEndOfStay(endOfStay);
-        stay.setPrice(price);
+        //stay.setPrice(price);
         return stay;
     }
     
